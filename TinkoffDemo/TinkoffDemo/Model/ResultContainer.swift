@@ -1,5 +1,5 @@
 //
-//  NewsHeadersContainer.swift
+//  ResultContainer.swift
 //  TinkoffDemo
 //
 //  Created by Andrey Morozov on 21.09.2018.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct NewsHeadersContainer: Codable {
+struct ResultContainer<T: Codable>: Codable {
 	let resultCode: String
-	let payload: [NewsHeader]
+	let payload: T
 	let trackingId: String
 }
