@@ -33,9 +33,11 @@ class TrasnportLayer {
 		let dataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
 			if let error = error {
 				self.delegate?.requestDidFail(error: error)
+				print("request to \(url): fail")
 				return
 			}
 			
+			print("request to \(url): success")
 			self.delegate?.requestDidSuccess(data: data!)
 		}
 		

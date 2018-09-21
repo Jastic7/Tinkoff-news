@@ -13,6 +13,7 @@ class NewsFeedViewController: UIViewController {
 	@IBOutlet weak var newsTableView: UITableView!
 	
 	var newsHeaders = [NewsHeader]()
+	var transportLayer: TrasnportLayer!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -29,6 +30,12 @@ class NewsFeedViewController: UIViewController {
 		newsTableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsCellIdentifier")
 		newsTableView.dataSource = self
 		newsTableView.delegate = self
+		
+		let baseURL = "https://api.tinkoff.ru/v"
+		transportLayer = TrasnportLayer(baseUrl: baseURL, delegate: self)
+		let path = "/v1/news_content"
+		let params = ["id": "0", "last": "20"]
+		transportLayer.makeRequest(by: path, with: params)
 	}
 	
 }
@@ -54,5 +61,16 @@ extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		performSegue(withIdentifier: "detailNewsSegue", sender: nil)
+	}
+}
+
+extension NewsFeedViewController: TransportLayerDelegate {
+	
+	func requestDidFail(error: Error) {
+		
+	}
+	
+	func requestDidSuccess(data: Data) {
+		
 	}
 }
