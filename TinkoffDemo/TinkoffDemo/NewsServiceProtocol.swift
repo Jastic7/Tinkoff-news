@@ -12,6 +12,8 @@ protocol NewsServiceInput {
 	
 	var output: NewsServiceOutput? { get set }
 	
+	init(transportLayer: TrasnportLayer)
+	
 	func obtainNewsHeaders(from fisrtNumber: UInt, count: UInt)
 	func obtainNews(for header: NewsHeader)
 }

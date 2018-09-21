@@ -8,21 +8,17 @@
 
 import Foundation
 
-protocol TransportLayerDelegate {
-	func requestDidFail(error: Error)
-	func requestDidSuccess(data: Data)
-}
-
 class TrasnportLayer {
 	private let baseUrl: String
-	var delegate: TransportLayerDelegate?
 	
-	init(baseUrl: String, delegate: TransportLayerDelegate) {
+	init(baseUrl: String) {
 		self.baseUrl = baseUrl
-		self.delegate = delegate
 	}
 	
-	func makeRequest(by path: String, with parameters: [String: String]) {
+	func makeRequest(by path: String,
+					 with parameters: [String: String],
+					 success: @escaping (_ data: Data) -> Void,
+					 failure: @escaping (_ error: Error) -> Void) {
 		guard var queryComponents = URLComponents(string: baseUrl) else { return }
 		queryComponents.path = path
 		queryComponents.queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }
@@ -32,13 +28,13 @@ class TrasnportLayer {
 		
 		let dataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
 			if let error = error {
-				self.delegate?.requestDidFail(error: error)
+				failure(error)
 				print("request to \(url): fail")
 				return
 			}
 			
 			print("request to \(url): success")
-			self.delegate?.requestDidSuccess(data: data!)
+			success(data!)
 		}
 		
 		dataTask.resume()

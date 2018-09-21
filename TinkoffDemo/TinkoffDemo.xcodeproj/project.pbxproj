@@ -18,6 +18,7 @@
 		559D92B2215529E10044B3CA /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D92B1215529E10044B3CA /* News.swift */; };
 		559D92B52155312F0044B3CA /* TransportLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D92B42155312F0044B3CA /* TransportLayer.swift */; };
 		559D92B721554FAC0044B3CA /* NewsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D92B621554FAC0044B3CA /* NewsServiceProtocol.swift */; };
+		559D92B9215558240044B3CA /* NewsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D92B8215558240044B3CA /* NewsService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		559D92B1215529E10044B3CA /* News.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
 		559D92B42155312F0044B3CA /* TransportLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportLayer.swift; sourceTree = "<group>"; };
 		559D92B621554FAC0044B3CA /* NewsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsServiceProtocol.swift; sourceTree = "<group>"; };
+		559D92B8215558240044B3CA /* NewsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				559D92AC215516F70044B3CA /* NewsTableViewCell.xib */,
 				559D92B42155312F0044B3CA /* TransportLayer.swift */,
 				559D92B621554FAC0044B3CA /* NewsServiceProtocol.swift */,
+				559D92B8215558240044B3CA /* NewsService.swift */,
 				559D92B321552E8E0044B3CA /* Model */,
 				559D92A0215503DD0044B3CA /* Assets.xcassets */,
 				559D92A2215503DD0044B3CA /* LaunchScreen.storyboard */,
@@ -164,6 +167,7 @@
 			files = (
 				559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */,
 				559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */,
+				559D92B9215558240044B3CA /* NewsService.swift in Sources */,
 				559D92B02155268D0044B3CA /* NewsHeader.swift in Sources */,
 				559D92B721554FAC0044B3CA /* NewsServiceProtocol.swift in Sources */,
 				559D92B52155312F0044B3CA /* TransportLayer.swift in Sources */,
