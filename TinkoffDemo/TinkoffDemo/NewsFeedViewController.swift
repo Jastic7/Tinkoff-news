@@ -12,14 +12,18 @@ class NewsFeedViewController: UIViewController {
 
 	@IBOutlet weak var newsTableView: UITableView!
 	
-	var news: [String]!
+	var newsHeaders = [NewsHeader]()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		news = [String]()
 		for i in 0...10 {
-			news.append("News header #\(i)")
+			let header = "News header #\(i)"
+			let numberOfViews: UInt = 0
+			let publicationDate = 1513684913000
+			let id = "\(i)"
+			let newsHeader = NewsHeader.init(id: id, text: header, publicationDate: publicationDate, numberOfViews: numberOfViews)
+			newsHeaders.append(newsHeader)
 		}
 		
 		newsTableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsCellIdentifier")
@@ -32,14 +36,15 @@ class NewsFeedViewController: UIViewController {
 extension NewsFeedViewController: UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return news.count
+		return newsHeaders.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCellIdentifier", for: indexPath) as! NewsTableViewCell
 		
-		cell.headerLabel.text = news[indexPath.row]
-		cell.countLabel.text = "Count: 0"
+		let header = newsHeaders[indexPath.row]
+		cell.headerLabel.text = header.text
+		cell.countLabel.text = "Count: \(header.numberOfViews)"
 		
 		return cell
 	}
