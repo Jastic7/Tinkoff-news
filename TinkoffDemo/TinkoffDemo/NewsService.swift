@@ -21,7 +21,10 @@ class NewsService: NewsServiceInput {
 		let path = "/v1/news_content"
 		
 		transportLayer.makeRequest(by: path, with: params, success: { (data) in
-			
+			let news: News? = self.decode(data)
+			DispatchQueue.main.async {
+				self.output?.newsService(self, didLoad: news!)
+			}
 		}) { (error) in
 			
 		}
@@ -34,9 +37,26 @@ class NewsService: NewsServiceInput {
 		let path = "/v1/news/"
 		
 		transportLayer.makeRequest(by: path, with: params, success: { (data) in
-			
+			let headers: [NewsHeader]? = self.decode(data)
+			DispatchQueue.main.async {
+				self.output?.newsService(self, didLoad: headers!)
+			}
 		}) { (error) in
 			
 		}
+	}
+	
+	private func decode<T: Codable>(_ data: Data) -> T? {
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = .millisecondsSince1970
+		
+		var result: T?
+		do {
+			result = try decoder.decode(ResultContainer<T>.self, from: data).payload
+		} catch {
+			print("error in parsing")
+		}
+		
+		return result
 	}
 }
