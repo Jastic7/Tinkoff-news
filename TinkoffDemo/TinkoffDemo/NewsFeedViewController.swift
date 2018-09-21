@@ -14,18 +14,10 @@ class NewsFeedViewController: UIViewController {
 	
 	var newsHeaders = [NewsHeader]()
 	var transportLayer: TrasnportLayer!
+	var newsService: NewsServiceInput!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		for i in 0...10 {
-			let header = "News header #\(i)"
-			let numberOfViews: UInt = 0
-			let publicationDate = 1513684913000
-			let id = "\(i)"
-			let newsHeader = NewsHeader.init(id: id, text: header, publicationDate: publicationDate, numberOfViews: numberOfViews)
-			newsHeaders.append(newsHeader)
-		}
 		
 		newsTableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsCellIdentifier")
 		newsTableView.dataSource = self
@@ -33,8 +25,9 @@ class NewsFeedViewController: UIViewController {
 		
 		let baseURL = "https://api.tinkoff.ru/v"
 		transportLayer = TrasnportLayer(baseUrl: baseURL)
-		let path = "/v1/news_content"
-		let params = ["id": "0", "last": "20"]
+		newsService = NewsService(transportLayer: transportLayer)
+		newsService.output = self
+		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
 	
 }
@@ -50,7 +43,7 @@ extension NewsFeedViewController: UITableViewDataSource {
 		
 		let header = newsHeaders[indexPath.row]
 		cell.headerLabel.text = header.text
-		cell.countLabel.text = "Count: \(header.numberOfViews)"
+		cell.countLabel.text = "Count: \(header.numberOfViews ?? 0)"
 		
 		return cell
 	}
@@ -60,5 +53,16 @@ extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		performSegue(withIdentifier: "detailNewsSegue", sender: nil)
+	}
+}
+
+extension NewsFeedViewController: NewsServiceOutput {
+	func newsService(_ service: NewsServiceInput, didLoad news: News) {
+		
+	}
+	
+	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
+		self.newsHeaders = newsHeaders
+		newsTableView.reloadData()
 	}
 }
