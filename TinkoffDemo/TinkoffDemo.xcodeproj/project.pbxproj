@@ -11,6 +11,7 @@
 		5590A7D9215617D100DC4ABA /* NewsDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */; };
 		5590A7E22156683D00DC4ABA /* LoadingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7E02156683D00DC4ABA /* LoadingTableViewCell.swift */; };
 		5590A7E32156683D00DC4ABA /* LoadingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5590A7E12156683D00DC4ABA /* LoadingTableViewCell.xib */; };
+		5590A7E52156708200DC4ABA /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7E42156708200DC4ABA /* StringExtensions.swift */; };
 		559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D9299215503DC0044B3CA /* AppDelegate.swift */; };
 		559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D929B215503DC0044B3CA /* NewsFeedViewController.swift */; };
 		559D929F215503DC0044B3CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 559D929D215503DC0044B3CA /* Main.storyboard */; };
@@ -30,6 +31,7 @@
 		5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetailsViewController.swift; sourceTree = "<group>"; };
 		5590A7E02156683D00DC4ABA /* LoadingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingTableViewCell.swift; sourceTree = "<group>"; };
 		5590A7E12156683D00DC4ABA /* LoadingTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingTableViewCell.xib; sourceTree = "<group>"; };
+		5590A7E42156708200DC4ABA /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		559D9296215503DC0044B3CA /* TinkoffDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinkoffDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		559D9299215503DC0044B3CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		559D929B215503DC0044B3CA /* NewsFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsFeedViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				559D929B215503DC0044B3CA /* NewsFeedViewController.swift */,
 				5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */,
 				559D929D215503DC0044B3CA /* Main.storyboard */,
+				5590A7E42156708200DC4ABA /* StringExtensions.swift */,
 				5590A7DA21565B7D00DC4ABA /* View */,
 				5590A7DB21565B9300DC4ABA /* Service */,
 				559D92B321552E8E0044B3CA /* Model */,
@@ -194,6 +197,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5590A7E52156708200DC4ABA /* StringExtensions.swift in Sources */,
 				5590A7D9215617D100DC4ABA /* NewsDetailsViewController.swift in Sources */,
 				559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */,
 				559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */,

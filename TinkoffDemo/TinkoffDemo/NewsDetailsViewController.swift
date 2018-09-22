@@ -26,7 +26,7 @@ class NewsDetailsViewController: UIViewController {
 		
 		numberOfViewsLabel.text = "Watched: \(news.header.numberOfViews ?? 0)"
 		creationDateLabel.text = news.creationDate.description
-		headerLabel.text = news.header.text
-		contentLabel.text = news.content
+		headerLabel.text = news.header.text.transformedByHtml
+		contentLabel.text = news.content.transformedByHtml
 	}
 }

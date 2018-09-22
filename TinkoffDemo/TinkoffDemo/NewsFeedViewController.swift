@@ -31,7 +31,7 @@ class NewsFeedViewController: UIViewController {
 		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
 	
-	func isLoadingCell(at indexPath: IndexPath) -> Bool {
+	private func isLoadingCell(at indexPath: IndexPath) -> Bool {
 		return indexPath.row == newsHeaders.count
 	}
 }
@@ -50,7 +50,7 @@ extension NewsFeedViewController: UITableViewDataSource {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCellIdentifier", for: indexPath) as! NewsTableViewCell
 		
 		let header = newsHeaders[indexPath.row]
-		cell.headerLabel.text = header.text
+		cell.headerLabel.text = header.text.transformedByHtml
 		cell.countLabel.text = "Count: \(header.numberOfViews ?? 0)"
 		
 		return cell
