@@ -44,20 +44,32 @@
         <!--Details-->
         <scene sceneID="LjK-7M-SBW">
             <objects>
-                <viewController id="EJn-5d-fs9" sceneMemberID="viewController">
+                <viewController id="EJn-5d-fs9" customClass="NewsDetailsViewController" customModule="TinkoffDemo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7uY-XE-zux">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some interesting and very very very very very very long text" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVp-Om-cBN">
-                                <rect key="frame" x="16" y="80" width="382" height="63.333333333333343"/>
+                                <rect key="frame" x="16" y="100.99999999999999" width="382" height="63.333333333333329"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nas-3K-AI8">
-                                <rect key="frame" x="16" y="157" width="398" height="21"/>
+                                <rect key="frame" x="16" y="178" width="398" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Creation date:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Llu-jU-oxK">
+                                <rect key="frame" x="318" y="72" width="80" height="15"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watched: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w7o-tQ-ybI">
+                                <rect key="frame" x="16" y="72" width="57" height="15"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -65,15 +77,25 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="pAW-Ys-wUI" firstAttribute="trailing" secondItem="oVp-Om-cBN" secondAttribute="trailing" constant="16" id="1oe-nZ-2e0"/>
+                            <constraint firstItem="w7o-tQ-ybI" firstAttribute="top" secondItem="pAW-Ys-wUI" secondAttribute="top" constant="8" id="5TB-O1-nz2"/>
                             <constraint firstItem="Nas-3K-AI8" firstAttribute="top" secondItem="oVp-Om-cBN" secondAttribute="bottom" constant="13.666666666666657" id="8Ac-Kg-hPi"/>
+                            <constraint firstItem="Llu-jU-oxK" firstAttribute="top" secondItem="pAW-Ys-wUI" secondAttribute="top" constant="8" id="Abj-Ln-Uy3"/>
+                            <constraint firstItem="oVp-Om-cBN" firstAttribute="top" secondItem="Llu-jU-oxK" secondAttribute="bottom" constant="14" id="BEE-zX-0uG"/>
+                            <constraint firstItem="w7o-tQ-ybI" firstAttribute="leading" secondItem="pAW-Ys-wUI" secondAttribute="leading" constant="16" id="DCN-UM-60I"/>
                             <constraint firstItem="Nas-3K-AI8" firstAttribute="leading" secondItem="pAW-Ys-wUI" secondAttribute="leading" constant="16" id="ESJ-r9-STM"/>
-                            <constraint firstItem="oVp-Om-cBN" firstAttribute="top" secondItem="pAW-Ys-wUI" secondAttribute="top" constant="16" id="Plg-4k-11v"/>
                             <constraint firstItem="pAW-Ys-wUI" firstAttribute="trailing" secondItem="Nas-3K-AI8" secondAttribute="trailing" id="Xyv-gH-e2n"/>
+                            <constraint firstItem="pAW-Ys-wUI" firstAttribute="trailing" secondItem="Llu-jU-oxK" secondAttribute="trailing" constant="16" id="j2J-Ls-SPr"/>
                             <constraint firstItem="oVp-Om-cBN" firstAttribute="leading" secondItem="pAW-Ys-wUI" secondAttribute="leading" constant="16" id="pjO-Ps-2Sk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="pAW-Ys-wUI"/>
                     </view>
                     <navigationItem key="navigationItem" title="Details" largeTitleDisplayMode="never" id="Zv4-iV-JH5"/>
+                    <connections>
+                        <outlet property="contentLabel" destination="Nas-3K-AI8" id="W9w-Q5-Fjm"/>
+                        <outlet property="creationDateLabel" destination="Llu-jU-oxK" id="K9e-Bb-scR"/>
+                        <outlet property="headerLabel" destination="oVp-Om-cBN" id="FeI-Ti-cXZ"/>
+                        <outlet property="numberOfViewsLabel" destination="w7o-tQ-ybI" id="p9Y-GX-fUu"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8BG-Z1-8YB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

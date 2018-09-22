@@ -46,6 +46,8 @@ class NewsService: NewsServiceInput {
 		}
 	}
 	
+	// MARK:- Private methods
+	
 	private func decode<T: Codable>(_ data: Data) -> T? {
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .millisecondsSince1970

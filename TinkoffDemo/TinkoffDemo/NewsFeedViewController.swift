@@ -29,7 +29,6 @@ class NewsFeedViewController: UIViewController {
 		newsService.output = self
 		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
-	
 }
 
 extension NewsFeedViewController: UITableViewDataSource {
@@ -53,12 +52,17 @@ extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		performSegue(withIdentifier: "detailNewsSegue", sender: nil)
+		let selectedHeader = newsHeaders[indexPath.row]
+		newsService.obtainNews(for: selectedHeader)
 	}
 }
 
 extension NewsFeedViewController: NewsServiceOutput {
 	func newsService(_ service: NewsServiceInput, didLoad news: News) {
-		
+		guard let detailsController = self.navigationController?.visibleViewController as? NewsDetailsViewController else {
+			return
+		}
+		detailsController.updateDetails(for: news)
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
