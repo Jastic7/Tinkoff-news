@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		552A5B40215588BC0079EA60 /* ResultContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552A5B3F215588BC0079EA60 /* ResultContainer.swift */; };
+		5590A7D9215617D100DC4ABA /* NewsDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */; };
 		559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D9299215503DC0044B3CA /* AppDelegate.swift */; };
 		559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D929B215503DC0044B3CA /* NewsFeedViewController.swift */; };
 		559D929F215503DC0044B3CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 559D929D215503DC0044B3CA /* Main.storyboard */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		552A5B3F215588BC0079EA60 /* ResultContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultContainer.swift; sourceTree = "<group>"; };
+		5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetailsViewController.swift; sourceTree = "<group>"; };
 		559D9296215503DC0044B3CA /* TinkoffDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinkoffDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		559D9299215503DC0044B3CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		559D929B215503DC0044B3CA /* NewsFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsFeedViewController.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			children = (
 				559D9299215503DC0044B3CA /* AppDelegate.swift */,
 				559D929B215503DC0044B3CA /* NewsFeedViewController.swift */,
+				5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */,
 				559D929D215503DC0044B3CA /* Main.storyboard */,
 				559D92AB215516F70044B3CA /* NewsTableViewCell.swift */,
 				559D92AC215516F70044B3CA /* NewsTableViewCell.xib */,
@@ -168,6 +171,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5590A7D9215617D100DC4ABA /* NewsDetailsViewController.swift in Sources */,
 				559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */,
 				559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */,
 				559D92B9215558240044B3CA /* NewsService.swift in Sources */,
