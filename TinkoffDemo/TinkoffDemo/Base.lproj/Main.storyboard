@@ -55,8 +55,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nas-3K-AI8">
-                                <rect key="frame" x="16" y="178" width="398" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nas-3K-AI8">
+                                <rect key="frame" x="16" y="178" width="382" height="20.333333333333343"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -83,7 +83,8 @@
                             <constraint firstItem="oVp-Om-cBN" firstAttribute="top" secondItem="Llu-jU-oxK" secondAttribute="bottom" constant="14" id="BEE-zX-0uG"/>
                             <constraint firstItem="w7o-tQ-ybI" firstAttribute="leading" secondItem="pAW-Ys-wUI" secondAttribute="leading" constant="16" id="DCN-UM-60I"/>
                             <constraint firstItem="Nas-3K-AI8" firstAttribute="leading" secondItem="pAW-Ys-wUI" secondAttribute="leading" constant="16" id="ESJ-r9-STM"/>
-                            <constraint firstItem="pAW-Ys-wUI" firstAttribute="trailing" secondItem="Nas-3K-AI8" secondAttribute="trailing" id="Xyv-gH-e2n"/>
+                            <constraint firstItem="pAW-Ys-wUI" firstAttribute="trailing" secondItem="Nas-3K-AI8" secondAttribute="trailing" constant="16" id="Xyv-gH-e2n"/>
+                            <constraint firstItem="pAW-Ys-wUI" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Nas-3K-AI8" secondAttribute="bottom" constant="16" id="f9K-DC-400"/>
                             <constraint firstItem="pAW-Ys-wUI" firstAttribute="trailing" secondItem="Llu-jU-oxK" secondAttribute="trailing" constant="16" id="j2J-Ls-SPr"/>
                             <constraint firstItem="oVp-Om-cBN" firstAttribute="leading" secondItem="pAW-Ys-wUI" secondAttribute="leading" constant="16" id="pjO-Ps-2Sk"/>
                         </constraints>
