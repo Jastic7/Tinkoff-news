@@ -15,11 +15,11 @@ protocol NewsServiceInput {
 	init(transportLayer: TrasnportLayer)
 	
 	func obtainNewsHeaders(from fisrtNumber: UInt, count: UInt)
-	func obtainNews(for header: NewsHeader)
+	func obtainDetails(for news: News)
 }
 
 protocol NewsServiceOutput {
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader])
-	func newsService(_ service: NewsServiceInput, didLoad news: News)
+	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for news: News)
 }

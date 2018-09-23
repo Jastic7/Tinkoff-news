@@ -9,45 +9,31 @@
 import Foundation
 
 struct News {
-	var header: NewsHeader
-	let content: String?
-	let creationDate: Date?
-	let lastModificationDate: Date?
+	let header: NewsHeader
+	var details: NewsDetails?
+	var views: UInt
+	
+	init(header: NewsHeader, details: NewsDetails? = nil, views: UInt = 0) {
+		self.header = header
+		self.details = details
+		self.views = views
+	}
+	
+	mutating func addView() {
+		views = views + 1
+	}
 }
 
 extension News: Equatable {
 	
 	public static func == (lhs: News, rhs: News) -> Bool {
-		return lhs.header == rhs.header
+		return lhs.header.id == rhs.header.id
 	}
 }
 
-extension News: Codable {
+extension News: Hashable {
 	
-	enum CodingKeys: String, CodingKey {
-		case header = "title"
-		case content
-		case creationDate
-		case lastModificationDate
-	}
-	
-	enum CreationDateKeys: String, CodingKey {
-		case milliseconds
-	}
-	
-	enum LastModificationDateKeys: String, CodingKey {
-		case milliseconds
-	}
-	
-	public init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: CodingKeys.self)
-		header = try container.decode(NewsHeader.self, forKey: .header)
-		content = try container.decode(String.self, forKey: .content)
-		
-		let creationDateContainer = try container.nestedContainer(keyedBy: CreationDateKeys.self, forKey: .creationDate)
-		creationDate = try creationDateContainer.decode(Date.self, forKey: .milliseconds)
-		
-		let modificationDateContainer = try container.nestedContainer(keyedBy: LastModificationDateKeys.self, forKey: .lastModificationDate)
-		lastModificationDate = try modificationDateContainer.decode(Date.self, forKey: .milliseconds)
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(header.id)
 	}
 }

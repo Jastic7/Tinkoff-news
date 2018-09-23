@@ -21,17 +21,17 @@ class NewsDetailsViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		updateDetails(for: news)
 		activityIndicator.startAnimating()
+		
+		headerLabel.text = news.header.text.transformedByHtml
+		numberOfViewsLabel.text = "Просмотров: \(news.views)"
     }
 
 	func updateDetails(for news: News) {
 		self.news = news
 		activityIndicator.stopAnimating()
 		
-		headerLabel.text = news.header.text.transformedByHtml
-		numberOfViewsLabel.text = "Просмотров: \(news.header.numberOfViews)"
-		creationDateLabel.text = news.creationDate?.description
-		contentLabel.text = news.content?.transformedByHtml
+		creationDateLabel.text = news.details?.creationDate.description
+		contentLabel.text = news.details?.content.transformedByHtml
 	}
 }

@@ -12,7 +12,6 @@ class NewsFeedViewController: UIViewController {
 
 	@IBOutlet weak var newsTableView: UITableView!
 	
-	var newsHeaders = [NewsHeader]()
 	var newsList = [News]()
 	var transportLayer: TrasnportLayer!
 	var newsService: NewsServiceInput!
@@ -41,7 +40,6 @@ class NewsFeedViewController: UIViewController {
 	}
 	
 	private func isLoadingCell(at indexPath: IndexPath) -> Bool {
-//		return indexPath.row == newsHeaders.count
 		return indexPath.row == newsList.count
 	}
 }
@@ -49,7 +47,6 @@ class NewsFeedViewController: UIViewController {
 extension NewsFeedViewController: UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//		return newsHeaders.count + 1
 		return newsList.count + 1
 	}
 	
@@ -60,14 +57,9 @@ extension NewsFeedViewController: UITableViewDataSource {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCellIdentifier", for: indexPath) as! NewsTableViewCell
 		
-//		let header = newsHeaders[indexPath.row]
-//		cell.headerLabel.text = header.text.transformedByHtml
-//		let numberOfViews = "Просмотров: \(header.numberOfViews)"
-//		cell.countLabel.text = numberOfViews
-		let header = newsList[indexPath.row].header
-		cell.headerLabel.text = header.text.transformedByHtml
-		let numberOfViews = "Просмотров: \(header.numberOfViews)"
-		cell.countLabel.text = numberOfViews
+		let news = newsList[indexPath.row]
+		cell.headerLabel.text = news.header.text.transformedByHtml
+		cell.countLabel.text = "Просмотров: \(news.views)"
 		
 		return cell
 	}
@@ -76,47 +68,37 @@ extension NewsFeedViewController: UITableViewDataSource {
 extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//		newsHeaders[indexPath.row].increaseCounter()
-		newsList[indexPath.row].header.increaseCounter()
-//		let selectedHeader = newsHeaders[indexPath.row]
+		newsList[indexPath.row].addView()
 		let selectedNews = newsList[indexPath.row]
 		
 		newsTableView.reloadRows(at: [indexPath], with: .fade)
-//		performSegue(withIdentifier: "detailNewsSegue", sender: selectedHeader)
 		performSegue(withIdentifier: "detailNewsSegue", sender: selectedNews)
 
-		newsService.obtainNews(for: selectedNews.header)
+		newsService.obtainDetails(for: selectedNews)
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		guard isLoadingCell(at: indexPath) else { return }
 		let last = UInt(newsList.count)
-//		let last = UInt(newsHeaders.count)
 		newsService.obtainNewsHeaders(from: last, count: 20)
 	}
 }
 
 extension NewsFeedViewController: NewsServiceOutput {
-	func newsService(_ service: NewsServiceInput, didLoad news: News) {
+	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for news: News) {
 		guard let detailsController = self.navigationController?.visibleViewController as? NewsDetailsViewController else {
 			return
 		}
 		
 		let index = newsList.firstIndex(of: news)
-		let oldNews = newsList[index!]
-		var updatedNews = news
-		updatedNews.header.numberOfViews = oldNews.header.numberOfViews
-		newsList[index!] = updatedNews
+		newsList[index!].details = details
 	
-		detailsController.updateDetails(for: updatedNews)
+		detailsController.updateDetails(for: newsList[index!])
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
-		let downloadedNewsList = newsHeaders.map {
-			return News(header: $0, content: nil, creationDate: nil, lastModificationDate: nil)
-		}
+		let downloadedNewsList = newsHeaders.map { return News(header: $0) }
 		newsList.append(contentsOf: downloadedNewsList)
-//		self.newsHeaders.append(contentsOf: newsHeaders)
 		newsTableView.reloadData()
 	}
 }
