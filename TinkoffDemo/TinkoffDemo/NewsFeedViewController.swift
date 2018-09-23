@@ -31,6 +31,23 @@ class NewsFeedViewController: UIViewController {
 		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		guard let selectedIndexPath = newsTableView.indexPathForSelectedRow else { return }
+		newsTableView.reloadRows(at: [selectedIndexPath], with: .fade)
+		newsTableView.deselectRow(at: selectedIndexPath, animated: false)
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		guard let identifier = segue.identifier, identifier == "detailNewsSegue" else { return }
+		guard let detailsViewController = segue.destination as? NewsDetailsViewController,
+			let selectedHeader = sender as? NewsHeader else { return }
+		
+		let news = News.init(header: selectedHeader, content: nil, creationDate: nil, lastModificationDate: nil)
+		detailsViewController.news = news
+	}
+	
 	private func isLoadingCell(at indexPath: IndexPath) -> Bool {
 		return indexPath.row == newsHeaders.count
 	}
@@ -51,7 +68,8 @@ extension NewsFeedViewController: UITableViewDataSource {
 		
 		let header = newsHeaders[indexPath.row]
 		cell.headerLabel.text = header.text.transformedByHtml
-		cell.countLabel.text = "Count: \(header.numberOfViews ?? 0)"
+		let numberOfViews = "Просмотров: \(header.numberOfViews)"
+		cell.countLabel.text = numberOfViews
 		
 		return cell
 	}
@@ -60,8 +78,11 @@ extension NewsFeedViewController: UITableViewDataSource {
 extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		performSegue(withIdentifier: "detailNewsSegue", sender: nil)
+		newsHeaders[indexPath.row].increaseCounter()
 		let selectedHeader = newsHeaders[indexPath.row]
+		
+		performSegue(withIdentifier: "detailNewsSegue", sender: selectedHeader)
+
 		newsService.obtainNews(for: selectedHeader)
 	}
 	
