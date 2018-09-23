@@ -52,6 +52,9 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lni-k0-1ao">
                                 <rect key="frame" x="0.0" y="64" width="414" height="672"/>
                                 <subviews>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="roa-h5-qeV">
+                                        <rect key="frame" x="197" y="326" width="20" height="20"/>
+                                    </activityIndicatorView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cny-gd-WUj">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="87"/>
                                         <subviews>
@@ -99,8 +102,10 @@
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="cny-gd-WUj" secondAttribute="trailing" id="6dj-tp-IEL"/>
                                     <constraint firstAttribute="bottom" secondItem="cny-gd-WUj" secondAttribute="bottom" id="Cxx-5Q-tX4"/>
+                                    <constraint firstItem="roa-h5-qeV" firstAttribute="centerY" secondItem="lni-k0-1ao" secondAttribute="centerY" id="VoJ-vS-z8B"/>
                                     <constraint firstItem="cny-gd-WUj" firstAttribute="top" secondItem="lni-k0-1ao" secondAttribute="top" id="gGK-A5-hbm"/>
                                     <constraint firstItem="cny-gd-WUj" firstAttribute="leading" secondItem="lni-k0-1ao" secondAttribute="leading" id="p2X-Ei-PKz"/>
+                                    <constraint firstItem="roa-h5-qeV" firstAttribute="centerX" secondItem="lni-k0-1ao" secondAttribute="centerX" id="son-jX-9Iy"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
@@ -116,6 +121,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Details" largeTitleDisplayMode="never" id="Zv4-iV-JH5"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="roa-h5-qeV" id="zi0-oH-OCm"/>
                         <outlet property="contentLabel" destination="DsK-WQ-QlI" id="BXA-gh-0AE"/>
                         <outlet property="creationDateLabel" destination="XZ5-hL-VvM" id="nMC-iA-c46"/>
                         <outlet property="headerLabel" destination="yZy-RO-AVp" id="Teg-g2-eyj"/>
