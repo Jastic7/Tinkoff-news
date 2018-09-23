@@ -85,15 +85,17 @@ extension NewsFeedViewController: UITableViewDelegate {
 }
 
 extension NewsFeedViewController: NewsServiceOutput {
+	
 	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for news: News) {
-		guard let detailsController = self.navigationController?.visibleViewController as? NewsDetailsViewController else {
+		guard let indexOfNews = newsList.firstIndex(of: news) else { return }
+		newsList[indexOfNews].details = details
+		
+		guard let detailsController = self.navigationController?.visibleViewController as? NewsDetailsViewController,
+			detailsController.news == news else {
 			return
 		}
 		
-		let index = newsList.firstIndex(of: news)
-		newsList[index!].details = details
-	
-		detailsController.updateDetails(for: newsList[index!])
+		detailsController.updateDetails(for: newsList[indexOfNews])
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
