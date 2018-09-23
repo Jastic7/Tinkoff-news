@@ -9,13 +9,21 @@
 import Foundation
 
 struct News {
-	let header: NewsHeader
+	var header: NewsHeader
 	let content: String?
 	let creationDate: Date?
 	let lastModificationDate: Date?
 }
 
+extension News: Equatable {
+	
+	public static func == (lhs: News, rhs: News) -> Bool {
+		return lhs.header == rhs.header
+	}
+}
+
 extension News: Codable {
+	
 	enum CodingKeys: String, CodingKey {
 		case header = "title"
 		case content

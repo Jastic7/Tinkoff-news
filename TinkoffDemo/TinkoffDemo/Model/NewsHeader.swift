@@ -39,3 +39,10 @@ struct NewsHeader: Codable {
 		numberOfViews = numberOfViews + 1
 	}
 }
+
+extension NewsHeader: Equatable {
+	
+	public static func == (lhs: NewsHeader, rhs: NewsHeader) -> Bool {
+		return lhs.id == rhs.id
+	}
+}
