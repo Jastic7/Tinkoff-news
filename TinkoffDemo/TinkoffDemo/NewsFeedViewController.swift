@@ -31,14 +31,6 @@ class NewsFeedViewController: UIViewController {
 		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		guard let selectedIndexPath = newsTableView.indexPathForSelectedRow else { return }
-		newsTableView.reloadRows(at: [selectedIndexPath], with: .fade)
-		newsTableView.deselectRow(at: selectedIndexPath, animated: false)
-	}
-	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		guard let identifier = segue.identifier, identifier == "detailNewsSegue" else { return }
 		guard let detailsViewController = segue.destination as? NewsDetailsViewController,
@@ -81,6 +73,7 @@ extension NewsFeedViewController: UITableViewDelegate {
 		newsHeaders[indexPath.row].increaseCounter()
 		let selectedHeader = newsHeaders[indexPath.row]
 		
+		newsTableView.reloadRows(at: [indexPath], with: .fade)
 		performSegue(withIdentifier: "detailNewsSegue", sender: selectedHeader)
 
 		newsService.obtainNews(for: selectedHeader)
