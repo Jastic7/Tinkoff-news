@@ -13,6 +13,8 @@
 		5590A7E32156683D00DC4ABA /* LoadingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5590A7E12156683D00DC4ABA /* LoadingTableViewCell.xib */; };
 		5590A7E52156708200DC4ABA /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7E42156708200DC4ABA /* StringExtensions.swift */; };
 		5590A7E72157C2D400DC4ABA /* NewsDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7E62157C2D400DC4ABA /* NewsDetails.swift */; };
+		5590A7ED2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7EB2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodeld */; };
+		5590A7EF2157E03600DC4ABA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7EE2157E03600DC4ABA /* CoreDataManager.swift */; };
 		559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D9299215503DC0044B3CA /* AppDelegate.swift */; };
 		559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D929B215503DC0044B3CA /* NewsFeedViewController.swift */; };
 		559D929F215503DC0044B3CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 559D929D215503DC0044B3CA /* Main.storyboard */; };
@@ -34,6 +36,8 @@
 		5590A7E12156683D00DC4ABA /* LoadingTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingTableViewCell.xib; sourceTree = "<group>"; };
 		5590A7E42156708200DC4ABA /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		5590A7E62157C2D400DC4ABA /* NewsDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetails.swift; sourceTree = "<group>"; };
+		5590A7EC2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TikfoffDemo.xcdatamodel; sourceTree = "<group>"; };
+		5590A7EE2157E03600DC4ABA /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		559D9296215503DC0044B3CA /* TinkoffDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinkoffDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		559D9299215503DC0044B3CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		559D929B215503DC0044B3CA /* NewsFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsFeedViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 		559D928D215503DC0044B3CA = {
 			isa = PBXGroup;
 			children = (
+				5590A7EB2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodeld */,
 				559D9298215503DC0044B3CA /* TinkoffDemo */,
 				559D9297215503DC0044B3CA /* Products */,
 			);
@@ -102,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				559D9299215503DC0044B3CA /* AppDelegate.swift */,
+				5590A7EE2157E03600DC4ABA /* CoreDataManager.swift */,
 				559D929B215503DC0044B3CA /* NewsFeedViewController.swift */,
 				5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */,
 				559D929D215503DC0044B3CA /* Main.storyboard */,
@@ -203,11 +209,13 @@
 				5590A7E52156708200DC4ABA /* StringExtensions.swift in Sources */,
 				5590A7E72157C2D400DC4ABA /* NewsDetails.swift in Sources */,
 				5590A7D9215617D100DC4ABA /* NewsDetailsViewController.swift in Sources */,
+				5590A7EF2157E03600DC4ABA /* CoreDataManager.swift in Sources */,
 				559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */,
 				559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */,
 				559D92B9215558240044B3CA /* NewsService.swift in Sources */,
 				552A5B40215588BC0079EA60 /* ResultContainer.swift in Sources */,
 				559D92B02155268D0044B3CA /* NewsHeader.swift in Sources */,
+				5590A7ED2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodeld in Sources */,
 				559D92B721554FAC0044B3CA /* NewsServiceProtocol.swift in Sources */,
 				5590A7E22156683D00DC4ABA /* LoadingTableViewCell.swift in Sources */,
 				559D92B52155312F0044B3CA /* TransportLayer.swift in Sources */,
@@ -410,6 +418,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5590A7EB2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5590A7EC2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodel */,
+			);
+			currentVersion = 5590A7EC2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodel */;
+			path = TikfoffDemo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 559D928E215503DC0044B3CA /* Project object */;
 }
