@@ -13,7 +13,22 @@ class CoreDataManager {
 	
 	static let shared = CoreDataManager(modelName: "TinkoffDemo")
 	
+	lazy var mainContext: NSManagedObjectContext = {
+		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+		context.persistentStoreCoordinator = persistanceStoreCoordinator
+		context.undoManager = nil
+		return context
+	}()
+	
+	lazy var writeContext: NSManagedObjectContext = {
+		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		context.parent = mainContext
+		context.undoManager = nil
+		return context
+	}()
+	
 	private let modelName: String
+	
 	private var storeUrl: URL = {
 		guard let documentUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
 			fatalError("Cannot resolve document directory url.")
@@ -31,13 +46,6 @@ class CoreDataManager {
 	
 	private lazy var persistanceStoreCoordinator: NSPersistentStoreCoordinator = {
 		return NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-	}()
-	
-	lazy var mainContext: NSManagedObjectContext = {
-		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-		context.persistentStoreCoordinator = persistanceStoreCoordinator
-		context.undoManager = nil
-		return context
 	}()
 	
 	private init(modelName: String) {
