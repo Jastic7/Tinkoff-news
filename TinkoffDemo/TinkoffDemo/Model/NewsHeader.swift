@@ -8,11 +8,14 @@
 
 import Foundation
 
-struct NewsHeader: Codable {
+struct NewsHeader {
 	let id: String
 	let text: String
 	let publicationDate: Date
-	
+}
+
+extension NewsHeader: Codable {
+
 	enum CodingKeys: String, CodingKey {
 		case id
 		case text

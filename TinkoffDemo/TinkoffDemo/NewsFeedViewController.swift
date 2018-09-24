@@ -15,9 +15,12 @@ class NewsFeedViewController: UIViewController {
 	var newsList = [News]()
 	var transportLayer: TrasnportLayer!
 	var newsService: NewsServiceInput!
+	let dataSource = NewsCoreDataDataSource()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		newsList = dataSource.obtainAllEntities()
 		
 		newsTableView.register(UINib(nibName: "LoadingTableViewCell", bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
 		newsTableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsCellIdentifier")
@@ -101,6 +104,7 @@ extension NewsFeedViewController: NewsServiceOutput {
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
 		let downloadedNewsList = newsHeaders.map { return News(header: $0) }
 		newsList.append(contentsOf: downloadedNewsList)
+		dataSource.save(entities: downloadedNewsList)
 		newsTableView.reloadData()
 	}
 }
