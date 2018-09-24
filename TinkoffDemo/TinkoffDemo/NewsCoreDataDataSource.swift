@@ -11,7 +11,7 @@ import CoreData
 
 class NewsCoreDataDataSource: DataSourceProtocol {
 	
-	private let coreDataManager = CoreDataManager()
+	private let coreDataManager = CoreDataManager.shared
 	private let translator = CoreDataTranslator()
 	
 	func obtainAllEntities() -> [News] {
@@ -22,7 +22,7 @@ class NewsCoreDataDataSource: DataSourceProtocol {
 	}
 	
 	func save(entities: [News]) {
-		let context = coreDataManager.mainContext!
+		let context = coreDataManager.mainContext
 		entities.forEach { news in
 			let predicate = NSPredicate(format: "%K == %@", #keyPath(MONews.header.id), news.header.id)
 			let moNews = coreDataManager.findOrCreate(by: MONews.fetchRequest(), with: predicate)

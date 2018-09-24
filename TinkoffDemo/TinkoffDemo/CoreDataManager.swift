@@ -11,49 +11,46 @@ import CoreData
 
 class CoreDataManager {
 	
-	private var storeUrl: URL? {
-		let directoryUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-		let fileUrl = URL(string: "Store.sql", relativeTo: directoryUrl)
-		
-		return fileUrl
-	}
+	static let shared = CoreDataManager(modelName: "TinkoffDemo")
 	
-	private var _managedObjectModel: NSManagedObjectModel?
-	var managedObjectModel: NSManagedObjectModel? {
-		if _managedObjectModel == nil {
-			guard let modelUrl = Bundle.main.url(forResource: "TinkoffDemo", withExtension: "momd") else { return nil }
-			_managedObjectModel = NSManagedObjectModel(contentsOf: modelUrl)
+	private let modelName: String
+	private var storeUrl: URL = {
+		guard let documentUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+			fatalError("Cannot resolve document directory url.")
 		}
 		
-		return _managedObjectModel
-	}
+		return documentUrl.appendingPathComponent("Store.sqlite")
+	}()
 	
-	private var _persistanceStoreCoordinator: NSPersistentStoreCoordinator?
-	var persistanceStoreCoordinator: NSPersistentStoreCoordinator? {
-		if _persistanceStoreCoordinator == nil {
-			guard let model = managedObjectModel else { return nil }
-			_persistanceStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
-			do {
-				try _persistanceStoreCoordinator?.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeUrl, options: nil)
-			} catch {
-				print("PersistanceStoreCoordinator fails")
-			}
-		}
+	private lazy var managedObjectModel: NSManagedObjectModel = {
+		guard let modelUrl = Bundle.main.url(forResource: modelName, withExtension: "momd") else { fatalError("Error loading model from bundle.") }
+		guard let model = NSManagedObjectModel(contentsOf: modelUrl) else { fatalError("Cannot initialize managed object model from url: \(modelUrl)") }
 		
-		return _persistanceStoreCoordinator
-	}
+		return model
+	}()
 	
-	private var _mainContext: NSManagedObjectContext?
-	var mainContext: NSManagedObjectContext? {
-		if _mainContext == nil {
-			guard let coordinator = persistanceStoreCoordinator else { return nil }
-			let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-			context.persistentStoreCoordinator = coordinator
-			context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
-			_mainContext = context
-		}
+	private lazy var persistanceStoreCoordinator: NSPersistentStoreCoordinator = {
+		return NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+	}()
+	
+	lazy var mainContext: NSManagedObjectContext = {
+		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+		context.persistentStoreCoordinator = persistanceStoreCoordinator
+		context.undoManager = nil
+		return context
+	}()
+	
+	private init(modelName: String) {
+		self.modelName = modelName
 		
-		return _mainContext
+		do {
+			try persistanceStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+															   configurationName: nil,
+															   at: storeUrl,
+															   options: nil)
+		} catch {
+			fatalError("Error migrating store.")
+		}
 	}
 	
 	func findOrCreate<T: NSManagedObject>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate) -> T {
@@ -61,9 +58,9 @@ class CoreDataManager {
 			return result
 		}
 		
-		let result = T(context: mainContext!)
+		let result = T(context: mainContext)
 		do {
-			try mainContext!.save()
+			try mainContext.save()
 		} catch {
 			print("Saving error: \(error)")
 		}
@@ -74,7 +71,7 @@ class CoreDataManager {
 	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil) -> [T] {
 		fetchRequest.predicate = predicate
 		do {
-			return try mainContext!.fetch(fetchRequest)
+			return try mainContext.fetch(fetchRequest)
 		} catch {
 			print("Fetch error: \(error)")
 		}
