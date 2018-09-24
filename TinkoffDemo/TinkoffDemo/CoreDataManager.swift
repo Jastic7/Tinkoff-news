@@ -55,4 +55,30 @@ class CoreDataManager {
 		
 		return _mainContext
 	}
+	
+	func findOrCreate<T: NSManagedObject>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate) -> T {
+		if let result = find(by: fetchRequest, with: predicate).first {
+			return result
+		}
+		
+		let result = T(context: mainContext!)
+		do {
+			try mainContext!.save()
+		} catch {
+			print("Saving error: \(error)")
+		}
+		
+		return result
+	}
+	
+	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil) -> [T] {
+		fetchRequest.predicate = predicate
+		do {
+			return try mainContext!.fetch(fetchRequest)
+		} catch {
+			print("Fetch error: \(error)")
+		}
+		
+		return []
+	}
 }

@@ -2,7 +2,7 @@
 //  MONews+CoreDataProperties.swift
 //  TinkoffDemo
 //
-//  Created by Andrey Morozov on 23.09.2018.
+//  Created by Andrey Morozov on 24.09.2018.
 //  Copyright © 2018 Jastic7. All rights reserved.
 //
 //
@@ -19,6 +19,6 @@ extension MONews {
 
     @NSManaged public var views: Int16
     @NSManaged public var details: MONewsDetails?
-    @NSManaged public var header: MONewsHeader
+    @NSManaged public var header: MONewsHeader?
 
 }

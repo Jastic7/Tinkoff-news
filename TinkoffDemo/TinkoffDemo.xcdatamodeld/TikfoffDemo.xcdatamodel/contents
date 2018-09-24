@@ -3,7 +3,7 @@
     <entity name="MONews" representedClassName="MONews" syncable="YES">
         <attribute name="views" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="details" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MONewsDetails" inverseName="news" inverseEntity="MONewsDetails" syncable="YES"/>
-        <relationship name="header" maxCount="1" deletionRule="Nullify" destinationEntity="MONewsHeader" inverseName="news" inverseEntity="MONewsHeader" syncable="YES"/>
+        <relationship name="header" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MONewsHeader" inverseName="news" inverseEntity="MONewsHeader" syncable="YES"/>
     </entity>
     <entity name="MONewsDetails" representedClassName="MONewsDetails" syncable="YES">
         <attribute name="content" attributeType="String" syncable="YES"/>
