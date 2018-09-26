@@ -16,14 +16,14 @@ class NewsService: NewsServiceInput {
 		self.transportLayer = transportLayer
 	}
 	
-	func obtainDetails(for news: News) {
-		let params = ["id": news.header.id]
+	func obtainDetails(for newsId: String) {
+		let params = ["id": newsId]
 		let path = "/v1/news_content"
 		
 		transportLayer.makeRequest(by: path, with: params, success: { (data) in
 			let details: NewsDetails? = self.decode(data)
 			DispatchQueue.main.async {
-				self.output?.newsService(self, didLoad: details!, for: news)
+				self.output?.newsService(self, didLoad: details!, for: newsId)
 			}
 		}) { (error) in
 			
