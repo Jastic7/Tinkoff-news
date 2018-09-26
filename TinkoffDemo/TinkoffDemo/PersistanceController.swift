@@ -1,5 +1,5 @@
 //
-//  CoreDataManager.swift
+//  PersistanceController.swift
 //  TinkoffDemo
 //
 //  Created by Andrey Morozov on 23.09.2018.
@@ -9,9 +9,9 @@
 import Foundation
 import CoreData
 
-class CoreDataManager {
+class PersistanceController {
 	
-	static let shared = CoreDataManager(modelName: "TinkoffDemo")
+	static let shared = PersistanceController(modelName: "TinkoffDemo")
 	
 	lazy var mainContext: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)

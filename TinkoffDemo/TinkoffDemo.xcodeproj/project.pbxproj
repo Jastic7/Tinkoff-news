@@ -14,7 +14,7 @@
 		5590A7E52156708200DC4ABA /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7E42156708200DC4ABA /* StringExtensions.swift */; };
 		5590A7E72157C2D400DC4ABA /* NewsDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7E62157C2D400DC4ABA /* NewsDetails.swift */; };
 		5590A7ED2157DFDE00DC4ABA /* TinkoffDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7EB2157DFDE00DC4ABA /* TinkoffDemo.xcdatamodeld */; };
-		5590A7EF2157E03600DC4ABA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7EE2157E03600DC4ABA /* CoreDataManager.swift */; };
+		5590A7EF2157E03600DC4ABA /* PersistanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7EE2157E03600DC4ABA /* PersistanceController.swift */; };
 		5590A7FD215800A600DC4ABA /* DataSourceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7FC215800A600DC4ABA /* DataSourceProtocol.swift */; };
 		5590A7FF215801A000DC4ABA /* NewsCoreDataDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5590A7FE215801A000DC4ABA /* NewsCoreDataDataSource.swift */; };
 		559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559D9299215503DC0044B3CA /* AppDelegate.swift */; };
@@ -46,7 +46,7 @@
 		5590A7E42156708200DC4ABA /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		5590A7E62157C2D400DC4ABA /* NewsDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetails.swift; sourceTree = "<group>"; };
 		5590A7EC2157DFDE00DC4ABA /* TikfoffDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TikfoffDemo.xcdatamodel; sourceTree = "<group>"; };
-		5590A7EE2157E03600DC4ABA /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		5590A7EE2157E03600DC4ABA /* PersistanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceController.swift; sourceTree = "<group>"; };
 		5590A7FC215800A600DC4ABA /* DataSourceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceProtocol.swift; sourceTree = "<group>"; };
 		5590A7FE215801A000DC4ABA /* NewsCoreDataDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCoreDataDataSource.swift; sourceTree = "<group>"; };
 		559D9296215503DC0044B3CA /* TinkoffDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinkoffDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,7 +132,7 @@
 			children = (
 				55C10022215805060062146B /* CoreData */,
 				559D9299215503DC0044B3CA /* AppDelegate.swift */,
-				5590A7EE2157E03600DC4ABA /* CoreDataManager.swift */,
+				5590A7EE2157E03600DC4ABA /* PersistanceController.swift */,
 				559D929B215503DC0044B3CA /* NewsFeedViewController.swift */,
 				5590A7D8215617D100DC4ABA /* NewsDetailsViewController.swift */,
 				559D929D215503DC0044B3CA /* Main.storyboard */,
@@ -249,7 +249,7 @@
 				55A948AE2159142C00909F79 /* MONewsHeader+CoreDataProperties.swift in Sources */,
 				55A948A92159142C00909F79 /* MONewsDetails+CoreDataClass.swift in Sources */,
 				5590A7D9215617D100DC4ABA /* NewsDetailsViewController.swift in Sources */,
-				5590A7EF2157E03600DC4ABA /* CoreDataManager.swift in Sources */,
+				5590A7EF2157E03600DC4ABA /* PersistanceController.swift in Sources */,
 				559D929C215503DC0044B3CA /* NewsFeedViewController.swift in Sources */,
 				559D929A215503DC0044B3CA /* AppDelegate.swift in Sources */,
 				559D92B9215558240044B3CA /* NewsService.swift in Sources */,
