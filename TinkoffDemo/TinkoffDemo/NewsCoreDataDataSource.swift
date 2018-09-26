@@ -11,29 +11,29 @@ import CoreData
 
 class NewsCoreDataDataSource: DataSourceProtocol {
 	
-	private let coreDataManager = CoreDataManager.shared
+	private let persistanceController: PersistanceController
 	private let translator = CoreDataTranslator()
 	
+	init(persistanceController: PersistanceController) {
+		self.persistanceController = persistanceController
+	}
+	
 	func obtainAllEntities() -> [News] {
-		let fetchedNews = coreDataManager.find(by: MONews.fetchRequest())
+		let fetchedNews = persistanceController.find(by: MONews.fetchRequest())
 		let results = fetchedNews.map { translator.createEntity(from: $0) }
 	
 		return results
 	}
 	
 	func save(entities: [News]) {
-		let context = coreDataManager.mainContext
+		let context = persistanceController.context
 		entities.forEach { news in
 			let predicate = NSPredicate(format: "%K == %@", #keyPath(MONews.header.id), news.header.id)
-			let moNews = coreDataManager.findOrCreate(by: MONews.fetchRequest(), with: predicate)
+			let moNews = persistanceController.findOrCreate(by: MONews.fetchRequest(), with: predicate)
 			
 			translator.fill(entry: moNews, from: news, in: context)
 		}
 		
-		do {
-			try context.save()
-		} catch {
-			print("Saving error")
-		}
+		persistanceController.save()
 	}
 }
