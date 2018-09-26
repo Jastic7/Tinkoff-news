@@ -11,21 +11,55 @@ import CoreData
 
 class PersistanceController {
 	
-	static let shared = PersistanceController(modelName: "TinkoffDemo")
-	
-	lazy var mainContext: NSManagedObjectContext = {
+	lazy var context: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+		context.parent = backgroundContext
+		context.undoManager = nil
+		return context
+	}()
+	
+	private lazy var backgroundContext: NSManagedObjectContext = {
+		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
 		context.persistentStoreCoordinator = persistanceStoreCoordinator
 		context.undoManager = nil
 		return context
 	}()
 	
-	lazy var writeContext: NSManagedObjectContext = {
-		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		context.parent = mainContext
-		context.undoManager = nil
-		return context
-	}()
+	init(modelName: String) {
+		self.modelName = modelName
+		
+		do {
+			try persistanceStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+															   configurationName: nil,
+															   at: storeUrl,
+															   options: nil)
+		} catch {
+			fatalError("Error migrating store.")
+		}
+	}
+	
+	func save() {
+		guard context.hasChanges else {
+			print("There is no changes")
+			return
+		}
+		
+		context.performAndWait {
+			do {
+				try context.save()
+			} catch {
+				print("Cannot save main context: \(error)")
+			}
+			
+			backgroundContext.perform {
+				do {
+					try self.backgroundContext.save()
+				} catch {
+					print("Cannot save backgorund context: \(error)")
+				}
+			}
+		}
+	}
 	
 	private let modelName: String
 	
@@ -48,27 +82,15 @@ class PersistanceController {
 		return NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 	}()
 	
-	private init(modelName: String) {
-		self.modelName = modelName
-		
-		do {
-			try persistanceStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType,
-															   configurationName: nil,
-															   at: storeUrl,
-															   options: nil)
-		} catch {
-			fatalError("Error migrating store.")
-		}
-	}
-	
 	func findOrCreate<T: NSManagedObject>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate) -> T {
 		if let result = find(by: fetchRequest, with: predicate).first {
 			return result
 		}
 		
-		let result = T(context: mainContext)
+		
+		let result = T(context: context)
 		do {
-			try mainContext.save()
+			try context.save()
 		} catch {
 			print("Saving error: \(error)")
 		}
@@ -79,7 +101,7 @@ class PersistanceController {
 	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil) -> [T] {
 		fetchRequest.predicate = predicate
 		do {
-			return try mainContext.fetch(fetchRequest)
+			return try context.fetch(fetchRequest)
 		} catch {
 			print("Fetch error: \(error)")
 		}
