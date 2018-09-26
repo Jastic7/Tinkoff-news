@@ -16,20 +16,18 @@ class NewsDetailsViewController: UIViewController {
 	@IBOutlet weak var contentLabel: UILabel!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	
-	var news: News!
+	weak var news: MONews!
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
 		updateDetails(for: news)
-		activityIndicator.startAnimating()
     }
 
-	func updateDetails(for news: News) {
-		self.news = news
+	func updateDetails(for news: MONews) {
 		activityIndicator.stopAnimating()
 		
-		headerLabel.text = news.header.text.transformedByHtml
+		headerLabel.text = news.header?.text.transformedByHtml
 		numberOfViewsLabel.text = "Просмотров: \(news.views)"
 		creationDateLabel.text = news.details?.creationDate.description
 		contentLabel.text = news.details?.content.transformedByHtml
