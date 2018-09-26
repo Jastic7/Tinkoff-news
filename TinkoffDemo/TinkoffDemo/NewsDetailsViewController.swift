@@ -22,6 +22,7 @@ class NewsDetailsViewController: UIViewController {
         super.viewDidLoad()
 		
 		updateDetails(for: news)
+		activityIndicator.startAnimating()
     }
 
 	func updateDetails(for news: MONews) {

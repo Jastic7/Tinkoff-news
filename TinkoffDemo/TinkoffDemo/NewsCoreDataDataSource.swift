@@ -26,7 +26,7 @@ class NewsCoreDataDataSource: DataSourceProtocol {
 	}
 	
 	func save(entities: [News]) {
-		let context = persistanceController.context
+		let context = persistanceController.readContext
 		entities.forEach { news in
 			let predicate = NSPredicate(format: "%K == %@", #keyPath(MONews.header.id), news.header.id)
 			let moNews = persistanceController.findOrCreate(by: MONews.fetchRequest(), with: predicate)

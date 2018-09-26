@@ -11,7 +11,14 @@ import CoreData
 
 class PersistanceController {
 	
-	lazy var context: NSManagedObjectContext = {
+	lazy var writeContext: NSManagedObjectContext = {
+		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		context.parent = readContext
+		context.undoManager = nil
+		return context
+	}()
+	
+	lazy var readContext: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		context.parent = backgroundContext
 		context.undoManager = nil
@@ -39,23 +46,31 @@ class PersistanceController {
 	}
 	
 	func save() {
-		guard context.hasChanges else {
+		guard writeContext.hasChanges else {
 			print("There is no changes")
 			return
 		}
 		
-		context.performAndWait {
+		writeContext.perform {
 			do {
-				try context.save()
+				try self.writeContext.save()
 			} catch {
-				print("Cannot save main context: \(error)")
+				print("Cannot save write context: \(error)")
 			}
 			
-			backgroundContext.perform {
+			self.readContext.performAndWait {
 				do {
-					try self.backgroundContext.save()
+					try self.readContext.save()
 				} catch {
-					print("Cannot save backgorund context: \(error)")
+					print("Cannot save main context: \(error)")
+				}
+				
+				self.backgroundContext.perform {
+					do {
+						try self.backgroundContext.save()
+					} catch {
+						print("Cannot save backgorund context: \(error)")
+					}
 				}
 			}
 		}
@@ -88,20 +103,13 @@ class PersistanceController {
 		}
 		
 		
-		let result = T(context: context)
-		do {
-			try context.save()
-		} catch {
-			print("Saving error: \(error)")
-		}
-		
-		return result
+		return T(context: writeContext)
 	}
 	
 	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil) -> [T] {
 		fetchRequest.predicate = predicate
 		do {
-			return try context.fetch(fetchRequest)
+			return try writeContext.fetch(fetchRequest)
 		} catch {
 			print("Fetch error: \(error)")
 		}

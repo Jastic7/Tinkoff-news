@@ -25,7 +25,7 @@ class NewsFeedViewController: UIViewController {
 		fetchRequest.sortDescriptors = [pulicationDateSort]
 		fetchRequest.fetchBatchSize = 20
 		
-		let context = persistanceController.context
+		let context = persistanceController.readContext
 		
 		return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 	}()
@@ -99,7 +99,7 @@ extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let selectedNews = fetchedResultController.object(at: indexPath)
-		let context = persistanceController.context
+		let context = persistanceController.readContext
 		context.perform {
 			selectedNews.views = selectedNews.views + 1
 		}
@@ -113,10 +113,13 @@ extension NewsFeedViewController: UITableViewDelegate {
 extension NewsFeedViewController: NewsServiceOutput {
 	
 	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for newsId: String) {
-		let predicate = NSPredicate(format: "header.id == %@", newsId)
-		guard let moNews = persistanceController.find(by: MONews.fetchRequest(), with: predicate).first else { return }
-		let context = persistanceController.context
+		let context = persistanceController.writeContext
 		context.perform {
+			let predicate = NSPredicate(format: "header.id == %@", newsId)
+			guard let moNews = self.persistanceController.find(by: MONews.fetchRequest(), with: predicate).first else {
+				return
+			}
+			
 			let moDetails = MONewsDetails(context: context)
 			moDetails.content = details.content
 			moDetails.creationDate = details.creationDate as NSDate
@@ -124,14 +127,15 @@ extension NewsFeedViewController: NewsServiceOutput {
 			moNews.details = moDetails
 			
 			guard let detailsController = self.navigationController?.visibleViewController as? NewsDetailsViewController,
-				detailsController.news == moNews else {
+				detailsController.news.header?.id == moNews.header?.id else {
 					return
 			}
 			
-			detailsController.updateDetails(for: moNews)
+			DispatchQueue.main.async {
+				detailsController.updateDetails(for: moNews)
+			}
+			self.persistanceController.save()
 		}
-
-
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
