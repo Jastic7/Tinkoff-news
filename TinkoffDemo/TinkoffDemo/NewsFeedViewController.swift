@@ -25,7 +25,7 @@ class NewsFeedViewController: UIViewController {
 		fetchRequest.sortDescriptors = [pulicationDateSort]
 		fetchRequest.fetchBatchSize = 20
 		
-		let context = persistanceController.readContext
+		let context = persistanceController.viewContext
 		
 		return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 	}()
@@ -46,10 +46,11 @@ class NewsFeedViewController: UIViewController {
 		newsTableView.dataSource = self
 		newsTableView.delegate = self
 		
-		let baseURL = "https://api.tinkoff.ru/v"
+		let baseURL = "https://api.tinkoff.ru/"
 		transportLayer = TrasnportLayer(baseUrl: baseURL)
 		newsService = NewsService(transportLayer: transportLayer)
 		newsService.output = self
+		newsService.obtainNewsHeaders(from: 0, count: 20)
 		
 		dataSource = NewsCoreDataDataSource(persistanceController: persistanceController)
 	}
@@ -74,7 +75,7 @@ extension NewsFeedViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		guard let sections = fetchedResultController.sections else { return 0 }
 		
-		return sections[section].numberOfObjects
+		return sections[section].numberOfObjects + 1
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -99,7 +100,7 @@ extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let selectedNews = fetchedResultController.object(at: indexPath)
-		let context = persistanceController.readContext
+		let context = persistanceController.viewContext
 		context.perform {
 			selectedNews.views = selectedNews.views + 1
 		}
@@ -108,15 +109,25 @@ extension NewsFeedViewController: UITableViewDelegate {
 		
 		performSegue(withIdentifier: "detailNewsSegue", sender: selectedNews)
 	}
+	
+	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		guard isLoadingCell(at: indexPath), let sections = fetchedResultController.sections else {
+			return
+		}
+		
+		let last = UInt(sections[indexPath.section].numberOfObjects)
+		newsService.obtainNewsHeaders(from: last, count: 20)
+		
+	}
 }
 
 extension NewsFeedViewController: NewsServiceOutput {
 	
 	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for newsId: String) {
-		let context = persistanceController.writeContext
+		let context = persistanceController.privateContext
 		context.perform {
 			let predicate = NSPredicate(format: "header.id == %@", newsId)
-			guard let moNews = self.persistanceController.find(by: MONews.fetchRequest(), with: predicate).first else {
+			guard let moNews = self.persistanceController.find(by: MONews.fetchRequest(), with: predicate, in: context).first else {
 				return
 			}
 			
@@ -131,15 +142,17 @@ extension NewsFeedViewController: NewsServiceOutput {
 					return
 			}
 			
-			DispatchQueue.main.async {
-				detailsController.updateDetails(for: moNews)
+			self.persistanceController.save() {
+				DispatchQueue.main.async {
+					detailsController.updateDetails()
+				}
 			}
-			self.persistanceController.save()
 		}
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
-
+		let downloadedNews = newsHeaders.map { News(header: $0) }
+		dataSource.save(entities: downloadedNews)
 	}
 }
 
