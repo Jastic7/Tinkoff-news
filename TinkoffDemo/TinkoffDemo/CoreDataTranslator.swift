@@ -23,8 +23,6 @@ class CoreDataTranslator {
 			}
 			fill(entry: entry.details!, from: details)
 		}
-		
-		entry.views = Int16(entity.views)
 	}
 	
 	func createEntity(from entry: MONews) -> News {
