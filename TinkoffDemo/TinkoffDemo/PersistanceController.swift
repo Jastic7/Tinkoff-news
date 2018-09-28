@@ -11,70 +11,19 @@ import CoreData
 
 class PersistanceController {
 	
-	lazy var writeContext: NSManagedObjectContext = {
+	lazy var privateContext: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		context.parent = readContext
+		context.parent = viewContext
 		context.undoManager = nil
 		return context
 	}()
 	
-	lazy var readContext: NSManagedObjectContext = {
+	lazy var viewContext: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		context.parent = backgroundContext
 		context.undoManager = nil
 		return context
 	}()
-	
-	private lazy var backgroundContext: NSManagedObjectContext = {
-		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		context.persistentStoreCoordinator = persistanceStoreCoordinator
-		context.undoManager = nil
-		return context
-	}()
-	
-	init(modelName: String) {
-		self.modelName = modelName
-		
-		do {
-			try persistanceStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType,
-															   configurationName: nil,
-															   at: storeUrl,
-															   options: nil)
-		} catch {
-			fatalError("Error migrating store.")
-		}
-	}
-	
-	func save() {
-		guard writeContext.hasChanges else {
-			print("There is no changes")
-			return
-		}
-		
-		writeContext.perform {
-			do {
-				try self.writeContext.save()
-			} catch {
-				print("Cannot save write context: \(error)")
-			}
-			
-			self.readContext.performAndWait {
-				do {
-					try self.readContext.save()
-				} catch {
-					print("Cannot save main context: \(error)")
-				}
-				
-				self.backgroundContext.perform {
-					do {
-						try self.backgroundContext.save()
-					} catch {
-						print("Cannot save backgorund context: \(error)")
-					}
-				}
-			}
-		}
-	}
 	
 	private let modelName: String
 	
@@ -97,19 +46,70 @@ class PersistanceController {
 		return NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 	}()
 	
-	func findOrCreate<T: NSManagedObject>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate) -> T {
-		if let result = find(by: fetchRequest, with: predicate).first {
+	private lazy var backgroundContext: NSManagedObjectContext = {
+		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		context.persistentStoreCoordinator = persistanceStoreCoordinator
+		context.undoManager = nil
+		return context
+	}()
+	
+	init(modelName: String) {
+		self.modelName = modelName
+		
+		do {
+			try persistanceStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+															   configurationName: nil,
+															   at: storeUrl,
+															   options: nil)
+		} catch {
+			fatalError("Error migrating store.")
+		}
+	}
+	
+	func save(completion: (() -> Void)? = nil) {
+		guard privateContext.hasChanges || viewContext.hasChanges else {
+			print("There is no changes")
+			return
+		}
+		
+		privateContext.perform {
+			do {
+				try self.privateContext.save()
+			} catch {
+				print("Cannot save write context: \(error)")
+			}
+			
+			self.viewContext.perform {
+				do {
+					try self.viewContext.save()
+					completion?()
+				} catch {
+					print("Cannot save main context: \(error)")
+				}
+				
+				self.backgroundContext.perform {
+					do {
+						try self.backgroundContext.save()
+					} catch {
+						print("Cannot save backgorund context: \(error)")
+					}
+				}
+			}
+		}
+	}
+	
+	func findOrCreate<T: NSManagedObject>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate, in context: NSManagedObjectContext) -> T {
+		if let result = find(by: fetchRequest, with: predicate, in: context).first {
 			return result
 		}
 		
-		
-		return T(context: writeContext)
+		return T(context: context)
 	}
 	
-	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil) -> [T] {
+	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil, in context: NSManagedObjectContext) -> [T] {
 		fetchRequest.predicate = predicate
 		do {
-			return try writeContext.fetch(fetchRequest)
+			return try context.fetch(fetchRequest)
 		} catch {
 			print("Fetch error: \(error)")
 		}
