@@ -21,11 +21,11 @@ class NewsDetailsViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		updateDetails(for: news)
+		updateDetails()
 		activityIndicator.startAnimating()
     }
 
-	func updateDetails(for news: MONews) {
+	func updateDetails() {
 		activityIndicator.stopAnimating()
 		
 		headerLabel.text = news.header?.text.transformedByHtml
