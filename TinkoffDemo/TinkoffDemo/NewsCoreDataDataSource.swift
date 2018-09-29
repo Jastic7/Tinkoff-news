@@ -9,23 +9,47 @@
 import Foundation
 import CoreData
 
-class NewsCoreDataDataSource: DataSourceProtocol {
+class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSourceProtocol, NSFetchedResultsControllerDelegate where OutputType.E == News {
+	
+	private(set) var output: OutputType
 	
 	private let persistanceController: PersistanceController
 	private let translator = CoreDataTranslator()
 	
-	init(persistanceController: PersistanceController) {
+	private lazy var fetchedResultController: NSFetchedResultsController<MONews> = {
+		let publicationDateSort = NSSortDescriptor(key: "header.publicationDate", ascending: false)
+		
+		let fetchRequest: NSFetchRequest = MONews.fetchRequest()
+		fetchRequest.sortDescriptors = [publicationDateSort]
+		fetchRequest.fetchBatchSize = 20
+		
+		let context = persistanceController.viewContext
+		
+		return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+	}()
+	
+	required init(persistanceController: PersistanceController, output: OutputType) {
 		self.persistanceController = persistanceController
+		self.output = output
+		
+		super.init()
+		
+		fetchedResultController.delegate = self;
+		do {
+			try fetchedResultController.performFetch()
+		} catch {
+			print("Cannot fetch results.")
+		}
 	}
 	
-	func obtainAllEntities() -> [News] {
-		let fetchedNews = persistanceController.find(by: MONews.fetchRequest(), in: persistanceController.viewContext)
-		let results = fetchedNews.map { translator.createEntity(from: $0) }
-	
-		return results
+	func entity(at indexPath: IndexPath) -> News {
+		let moNews = fetchedResultController.object(at: indexPath)
+		let news = translator.createEntity(from: moNews)
+		
+		return news
 	}
 	
-	func save(entities: [News]) {
+	func save(entities: [News], completion: (() -> Void)? = nil) {
 		let context = persistanceController.privateContext
 		context.perform {
 			entities.forEach { news in
@@ -34,7 +58,43 @@ class NewsCoreDataDataSource: DataSourceProtocol {
 				self.translator.fill(entry: moNews, from: news, in: context)
 			}
 			
-			self.persistanceController.save()
+			self.persistanceController.save() {
+				completion?()
+			}
 		}
+	}
+	
+	func numberOfEntities(in section: Int) -> Int {
+		guard let sections = fetchedResultController.sections else { return 0 }
+		
+		return sections[section].numberOfObjects
+	}
+	
+	
+	// MARK:- NSFetchedResultsControllerDelegate
+	
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		output.dataSourceWillChangeEntities()
+	}
+	
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+		
+		switch type {
+		case .insert:
+			let entry = fetchedResultController.object(at: newIndexPath!)
+			let entity = translator.createEntity(from: entry)
+			output.dataSource(didChange: entity, with: DataSourceChangeType.insert(in: newIndexPath!))
+			
+		case .update:
+			let entry = fetchedResultController.object(at: newIndexPath!)
+			let entity = translator.createEntity(from: entry)
+			output.dataSource(didChange: entity, with: .update(at: newIndexPath!))
+		default:
+			break
+		}
+	}
+	
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		output.dataSourceDidChangeEntities()
 	}
 }

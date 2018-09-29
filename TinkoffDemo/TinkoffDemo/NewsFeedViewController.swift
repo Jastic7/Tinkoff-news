@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreData
 
 class NewsFeedViewController: UIViewController {
 
@@ -15,31 +14,11 @@ class NewsFeedViewController: UIViewController {
 	
 	var transportLayer: TrasnportLayer!
 	var newsService: NewsServiceInput!
-	var dataSource: NewsCoreDataDataSource!
+	var dataSource: NewsCoreDataDataSource<NewsFeedViewController>!
 	var persistanceController: PersistanceController!
-	
-	lazy var fetchedResultController: NSFetchedResultsController<MONews> = {
-		let pulicationDateSort = NSSortDescriptor(key: "header.publicationDate", ascending: false)
-		
-		let fetchRequest: NSFetchRequest = MONews.fetchRequest()
-		fetchRequest.sortDescriptors = [pulicationDateSort]
-		fetchRequest.fetchBatchSize = 20
-		
-		let context = persistanceController.viewContext
-		
-		return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-	}()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		fetchedResultController.delegate = self
-		
-		do {
-			try fetchedResultController.performFetch()
-		} catch {
-			fatalError("Cannot use FRC: \(error)")
-		}
 		
 		newsTableView.register(UINib(nibName: "LoadingTableViewCell", bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
 		newsTableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsCellIdentifier")
@@ -50,32 +29,29 @@ class NewsFeedViewController: UIViewController {
 		transportLayer = TrasnportLayer(baseUrl: baseURL)
 		newsService = NewsService(transportLayer: transportLayer)
 		newsService.output = self
-		newsService.obtainNewsHeaders(from: 0, count: 20)
+//		newsService.obtainNewsHeaders(from: 0, count: 20)
 		
-		dataSource = NewsCoreDataDataSource(persistanceController: persistanceController)
+		dataSource = NewsCoreDataDataSource(persistanceController: persistanceController, output: self)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		guard let identifier = segue.identifier, identifier == "detailNewsSegue" else { return }
 		guard let detailsViewController = segue.destination as? NewsDetailsViewController,
-			let selectedNews = sender as? MONews else { return }
+			let selectedNews = sender as? News else { return }
 		
 		detailsViewController.news = selectedNews
+		detailsViewController.isSpinnerActive = true
 	}
 	
 	private func isLoadingCell(at indexPath: IndexPath) -> Bool {
-		guard let sections = fetchedResultController.sections else { return false }
-		
-		return indexPath.row == sections[indexPath.section].numberOfObjects
+		return indexPath.row == dataSource.numberOfEntities(in: indexPath.section)
 	}
 }
 
 extension NewsFeedViewController: UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		guard let sections = fetchedResultController.sections else { return 0 }
-		
-		return sections[section].numberOfObjects + 1
+		return dataSource.numberOfEntities(in: section) + 1
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -84,14 +60,14 @@ extension NewsFeedViewController: UITableViewDataSource {
 		}
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCellIdentifier", for: indexPath) as! NewsTableViewCell
-		let news = fetchedResultController.object(at: indexPath)
+		let news = dataSource.entity(at: indexPath)
 		configure(cell: cell, with: news)
 		
 		return cell
 	}
 	
-	func configure(cell: NewsTableViewCell, with news: MONews) {
-		cell.headerLabel.text = news.header?.text.transformedByHtml
+	func configure(cell: NewsTableViewCell, with news: News) {
+		cell.headerLabel.text = news.header.text.transformedByHtml
 		cell.countLabel.text = "Просмотров: \(news.views)"
 	}
 }
@@ -99,53 +75,42 @@ extension NewsFeedViewController: UITableViewDataSource {
 extension NewsFeedViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let selectedNews = fetchedResultController.object(at: indexPath)
-		let context = persistanceController.viewContext
-		context.perform {
-			selectedNews.views = selectedNews.views + 1
-		}
+		var selectedNews = dataSource.entity(at: indexPath)
+		selectedNews.addView()
+		dataSource.save(entities: [selectedNews])
 		
-		newsService.obtainDetails(for: selectedNews.header!.id)
+		newsService.obtainDetails(for: selectedNews)
 		
 		performSegue(withIdentifier: "detailNewsSegue", sender: selectedNews)
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		guard isLoadingCell(at: indexPath), let sections = fetchedResultController.sections else {
+		guard isLoadingCell(at: indexPath) else {
 			return
 		}
 		
-		let last = UInt(sections[indexPath.section].numberOfObjects)
+		let last = UInt(dataSource.numberOfEntities(in: indexPath.section))
 		newsService.obtainNewsHeaders(from: last, count: 20)
-		
 	}
 }
 
 extension NewsFeedViewController: NewsServiceOutput {
 	
-	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for newsId: String) {
-		let context = persistanceController.privateContext
-		context.perform {
-			let predicate = NSPredicate(format: "header.id == %@", newsId)
-			guard let moNews = self.persistanceController.find(by: MONews.fetchRequest(), with: predicate, in: context).first else {
-				return
-			}
-			
-			let moDetails = MONewsDetails(context: context)
-			moDetails.content = details.content
-			moDetails.creationDate = details.creationDate as NSDate
-			moDetails.lastModificationDate = details.lastModificationDate as NSDate
-			moNews.details = moDetails
-			
+	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for news: News) {
+		var updatedNews = news
+		updatedNews.details = details
+		
+		dataSource.save(entities: [updatedNews]) {
 			guard let detailsController = self.navigationController?.visibleViewController as? NewsDetailsViewController,
-				detailsController.news.header?.id == moNews.header?.id else {
+				detailsController.news == updatedNews else {
 					return
 			}
-			
-			self.persistanceController.save() {
-				DispatchQueue.main.async {
-					detailsController.updateDetails()
-				}
+
+			DispatchQueue.main.async {
+				detailsController.news = updatedNews
+				detailsController.isSpinnerActive = false
+				detailsController.updateDetails()
+				detailsController.updateSpinner()
 			}
 		}
 	}
@@ -156,25 +121,24 @@ extension NewsFeedViewController: NewsServiceOutput {
 	}
 }
 
-extension NewsFeedViewController: NSFetchedResultsControllerDelegate {
+extension NewsFeedViewController: DataSourceOutput {
 	
-	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+	func dataSourceWillChangeEntities() {
 		newsTableView.beginUpdates()
 	}
 	
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-		
+	func dataSource(didChange entity: News, with type: DataSourceChangeType) {
 		switch type {
-		case .insert:
-			newsTableView.insertRows(at: [newIndexPath!], with: .fade)
-		case .update:
-			newsTableView.reloadRows(at: [newIndexPath!], with: .fade)
+		case .insert(let insertPath):
+			newsTableView.insertRows(at: [insertPath], with: .fade)
+		case .update(at: let updatePath):
+			newsTableView.reloadRows(at: [updatePath], with: .fade)
 		default:
 			break
 		}
 	}
 	
-	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+	func dataSourceDidChangeEntities() {
 		newsTableView.endUpdates()
 	}
 }
