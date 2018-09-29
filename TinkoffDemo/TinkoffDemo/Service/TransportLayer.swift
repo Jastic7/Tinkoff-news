@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Responsible for data retrieving through URLSession.
 class TrasnportLayer {
 	private let baseUrl: String
 	
@@ -15,6 +16,13 @@ class TrasnportLayer {
 		self.baseUrl = baseUrl
 	}
 	
+	/// Create and start data task.
+	///
+	/// - Parameters:
+	///   - path: Path to end point of API.
+	///   - parameters: Params for request.
+	///   - success: Fires, when task has been completed successfully.
+	///   - failure: Fires, when task has been failed.
 	func makeRequest(by path: String,
 					 with parameters: [String: String],
 					 success: @escaping (_ data: Data) -> Void,

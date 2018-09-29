@@ -26,7 +26,9 @@ class NewsService: NewsServiceInput {
 				self.output?.newsService(self, didLoad: details!, for: news)
 			}
 		}) { (error) in
-			
+			DispatchQueue.main.async {
+				self.output?.newsServiceDidFail(self)
+			}
 		}
 	}
 	

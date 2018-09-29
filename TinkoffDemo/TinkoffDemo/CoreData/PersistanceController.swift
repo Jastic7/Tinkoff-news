@@ -9,15 +9,21 @@
 import Foundation
 import CoreData
 
+
+/// Responsible for CoreData stack creation and context manipulation.
 class PersistanceController {
 	
-	lazy var privateContext: NSManagedObjectContext = {
+	/// Context with privateQueueConcurrencyType.
+	/// Use it for writing.
+	lazy var writeContext: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
 		context.parent = viewContext
 		context.undoManager = nil
 		return context
 	}()
 	
+	/// Context with mainQueueConcurrencyType.
+	/// Use it for reading.
 	lazy var viewContext: NSManagedObjectContext = {
 		let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		context.parent = backgroundContext
@@ -66,15 +72,18 @@ class PersistanceController {
 		}
 	}
 	
+	/// Save all context alternately.
+	///
+	/// - Parameter completion: Fires, when main context has been saved.
 	func save(completion: (() -> Void)? = nil) {
-		guard privateContext.hasChanges || viewContext.hasChanges else {
+		guard writeContext.hasChanges || viewContext.hasChanges else {
 			print("There is no changes")
 			return
 		}
 		
-		privateContext.perform {
+		writeContext.perform {
 			do {
-				try self.privateContext.save()
+				try self.writeContext.save()
 			} catch {
 				print("Cannot save write context: \(error)")
 			}
@@ -98,6 +107,13 @@ class PersistanceController {
 		}
 	}
 	
+	/// Try find object in coredata. If it doesn't exist - create it.
+	///
+	/// - Parameters:
+	///   - fetchRequest: Description of request for object.
+	///   - predicate: Filter condition.
+	///   - context: Context for searching and creation.
+	/// - Returns: Found or created object.
 	func findOrCreate<T: NSManagedObject>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate, in context: NSManagedObjectContext) -> T {
 		if let result = find(by: fetchRequest, with: predicate, in: context).first {
 			return result
@@ -106,6 +122,13 @@ class PersistanceController {
 		return T(context: context)
 	}
 	
+	/// Search object on coredata by some criteria.
+	///
+	/// - Parameters:
+	///   - fetchRequest: Description of request for object.
+	///   - predicate: Filter condition.
+	///   - context: Context for searching
+	/// - Returns: Array of found objects or emtpy array, if there is no one object, which satisfy search criteria.
 	func find<T>(by fetchRequest: NSFetchRequest<T>, with predicate: NSPredicate? = nil, in context: NSManagedObjectContext) -> [T] {
 		fetchRequest.predicate = predicate
 		do {

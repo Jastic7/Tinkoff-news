@@ -9,8 +9,15 @@
 import Foundation
 import CoreData
 
+/// Responsible for translation PONSO object to NSManagedObject and vise versa.
 class CoreDataTranslator {
 	
+	/// Fill data from PONSO to NSManagedObject
+	///
+	/// - Parameters:
+	///   - entry: Destination of data filling.
+	///   - entity: Source of data filling.
+	///   - context: Context for creation parts of whole NSManagedObject.
 	func fill(entry: MONews, from entity: News, in context: NSManagedObjectContext) {
 		if entry.header == nil {
 			entry.header = MONewsHeader(context: context)
@@ -29,6 +36,10 @@ class CoreDataTranslator {
 		}
 	}
 	
+	/// Create PONSO object from NSManagedObject.
+	///
+	/// - Parameter entry: Source of data.
+	/// - Returns: POSNO object with data.
 	func createEntity(from entry: MONews) -> News {
 		let header = createEntity(from: entry.header!)
 		let details = createEntity(from: entry.details)

@@ -52,7 +52,7 @@ class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSource
 	}
 	
 	func save(entities: [News], completion: (() -> Void)? = nil) {
-		let context = persistanceController.privateContext
+		let context = persistanceController.writeContext
 		context.perform {
 			entities.forEach { news in
 				let predicate = NSPredicate(format: "%K == %@", #keyPath(MONews.header.id), news.header.id)
