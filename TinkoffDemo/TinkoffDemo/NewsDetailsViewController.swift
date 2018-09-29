@@ -16,21 +16,24 @@ class NewsDetailsViewController: UIViewController {
 	@IBOutlet weak var contentLabel: UILabel!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	
-	weak var news: MONews!
+	var isSpinnerActive: Bool = false
+	var news: News!
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
+		updateSpinner()
 		updateDetails()
-		activityIndicator.startAnimating()
     }
 
 	func updateDetails() {
-		activityIndicator.stopAnimating()
-		
-		headerLabel.text = news.header?.text.transformedByHtml
+		headerLabel.text = news.header.text.transformedByHtml
 		numberOfViewsLabel.text = "Просмотров: \(news.views)"
 		creationDateLabel.text = news.details?.creationDate.description
 		contentLabel.text = news.details?.content.transformedByHtml
+	}
+	
+	func updateSpinner() {
+		isSpinnerActive ? activityIndicator.startAnimating() : activityIndicator.stopAnimating()
 	}
 }
