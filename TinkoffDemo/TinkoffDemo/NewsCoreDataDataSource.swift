@@ -21,7 +21,7 @@ class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSource
 		
 		let fetchRequest: NSFetchRequest = MONews.fetchRequest()
 		fetchRequest.sortDescriptors = [publicationDateSort]
-		fetchRequest.fetchBatchSize = 20
+		fetchRequest.fetchBatchSize = 30
 		
 		let context = persistanceController.viewContext
 		

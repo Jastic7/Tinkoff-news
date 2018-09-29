@@ -8,10 +8,8 @@
 
 import UIKit
 
-class NewsFeedViewController: UIViewController {
+class NewsFeedViewController: UITableViewController {
 
-	@IBOutlet weak var newsTableView: UITableView!
-	private let refreshControl = UIRefreshControl()
 	private let spinner = UIActivityIndicatorView(style: .gray)
 	
 	var newsService: NewsServiceInput!
@@ -22,16 +20,16 @@ class NewsFeedViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		refreshControl.addTarget(self, action: #selector(updateNews(_:)), for: .valueChanged)
-		spinner.frame = CGRect(x: 0, y: 0, width: newsTableView.frame.width, height: 44)
+		let frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44)
+		
+		spinner.frame = frame
 		spinner.startAnimating()
 		
-		newsTableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: newsCellIdentifier)
-		newsTableView.dataSource = self
-		newsTableView.delegate = self
-		newsTableView.estimatedRowHeight = 80
-		newsTableView.refreshControl = refreshControl
-		newsTableView.tableFooterView = spinner
+		tableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: newsCellIdentifier)
+		tableView.estimatedRowHeight = 80
+		tableView.refreshControl = UIRefreshControl(frame: frame)
+		tableView.refreshControl?.addTarget(self, action: #selector(updateNews(_:)), for: .valueChanged)
+		tableView.tableFooterView = spinner
 
 		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
@@ -50,13 +48,16 @@ class NewsFeedViewController: UIViewController {
 	}
 }
 
-extension NewsFeedViewController: UITableViewDataSource {
+
+//MARK:- UITableViewDataSource
+
+extension NewsFeedViewController {
 	
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return dataSource.numberOfEntities(in: section)
 	}
 	
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: newsCellIdentifier, for: indexPath) as! NewsTableViewCell
 		let news = dataSource.entity(at: indexPath)
 		configure(cell: cell, with: news)
@@ -70,9 +71,12 @@ extension NewsFeedViewController: UITableViewDataSource {
 	}
 }
 
-extension NewsFeedViewController: UITableViewDelegate {
+
+//MARK:- UITableViewDelegate
+
+extension NewsFeedViewController {
 	
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var selectedNews = dataSource.entity(at: indexPath)
 		selectedNews.addView()
 		dataSource.save(entities: [selectedNews])
@@ -82,13 +86,17 @@ extension NewsFeedViewController: UITableViewDelegate {
 		performSegue(withIdentifier: "detailNewsSegue", sender: selectedNews)
 	}
 	
-	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		guard indexPath.row == dataSource.numberOfEntities(in: indexPath.section) - 1 else { return }
 		
+		spinner.startAnimating()
 		let last = UInt(dataSource.numberOfEntities(in: indexPath.section))
 		newsService.obtainNewsHeaders(from: last, count: 20)
 	}
 }
+
+
+//MARK:- NewsServiceOutput
 
 extension NewsFeedViewController: NewsServiceOutput {
 	
@@ -112,30 +120,42 @@ extension NewsFeedViewController: NewsServiceOutput {
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
-		refreshControl.endRefreshing()
+		refreshControl?.endRefreshing()
+		if newsHeaders.isEmpty {
+			spinner.stopAnimating()
+		}
+		
 		let downloadedNews = newsHeaders.map { News(header: $0) }
 		dataSource.save(entities: downloadedNews)
 	}
+	
+	func newsServiceDidFail(_ service: NewsServiceInput) {
+		refreshControl?.endRefreshing()
+		spinner.stopAnimating()
+	}
 }
+
+
+//MARK:- DataSourceOutput
 
 extension NewsFeedViewController: DataSourceOutput {
 	
 	func dataSourceWillChangeEntities() {
-		newsTableView.beginUpdates()
+		tableView.beginUpdates()
 	}
 	
 	func dataSource(didChange entity: News, with type: DataSourceChangeType) {
 		switch type {
 		case .insert(let insertPath):
-			newsTableView.insertRows(at: [insertPath], with: .fade)
+			tableView.insertRows(at: [insertPath], with: .fade)
 		case .update(at: let updatePath):
-			newsTableView.reloadRows(at: [updatePath], with: .fade)
+			tableView.reloadRows(at: [updatePath], with: .fade)
 		default:
 			break
 		}
 	}
 	
 	func dataSourceDidChangeEntities() {
-		newsTableView.endUpdates()
+		tableView.endUpdates()
 	}
 }

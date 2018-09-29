@@ -4,42 +4,33 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--News-->
-        <scene sceneID="tne-QT-ifu">
+        <scene sceneID="ijr-dk-Kgf">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="NewsFeedViewController" customModule="TinkoffDemo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                <tableViewController id="xHb-Kf-fQ0" customClass="NewsFeedViewController" customModule="TinkoffDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="YGk-97-Zfl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SdD-5W-4VW">
-                                <rect key="frame" x="0.0" y="116" width="414" height="620"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="SdD-5W-4VW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Y5C-qs-72h"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="SdD-5W-4VW" secondAttribute="bottom" id="ac0-EC-bGb"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="SdD-5W-4VW" secondAttribute="trailing" id="dL3-pR-HPD"/>
-                            <constraint firstItem="SdD-5W-4VW" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="nEu-8O-V8M"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="News" id="uPb-ie-KDp"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <connections>
+                            <outlet property="dataSource" destination="xHb-Kf-fQ0" id="47j-jC-WOv"/>
+                            <outlet property="delegate" destination="xHb-Kf-fQ0" id="y6g-HJ-eaK"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="News" id="CeY-Km-W2n"/>
                     <connections>
-                        <outlet property="newsTableView" destination="SdD-5W-4VW" id="0QS-Ie-pjh"/>
-                        <segue destination="EJn-5d-fs9" kind="show" identifier="detailNewsSegue" id="Iz6-Rh-Wu9"/>
+                        <segue destination="EJn-5d-fs9" kind="show" identifier="detailNewsSegue" id="qpI-Vz-8C3"/>
                     </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VJc-Ow-EzF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1076" y="133.5832083958021"/>
+            <point key="canvasLocation" x="752" y="134"/>
         </scene>
         <!--Details-->
         <scene sceneID="LjK-7M-SBW">
@@ -143,12 +134,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="uxB-0O-5IU"/>
+                        <segue destination="xHb-Kf-fQ0" kind="relationship" relationship="rootViewController" id="Sid-ne-0on"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kgi-lD-fAH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="201" y="134"/>
+            <point key="canvasLocation" x="-206" y="134"/>
         </scene>
     </scenes>
 </document>

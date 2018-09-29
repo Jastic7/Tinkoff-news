@@ -42,7 +42,9 @@ class NewsService: NewsServiceInput {
 				self.output?.newsService(self, didLoad: headers!)
 			}
 		}) { (error) in
-			
+			DispatchQueue.main.async {
+				self.output?.newsServiceDidFail(self)
+			}
 		}
 	}
 	

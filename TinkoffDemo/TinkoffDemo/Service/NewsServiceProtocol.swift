@@ -22,4 +22,5 @@ protocol NewsServiceOutput {
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader])
 	func newsService(_ service: NewsServiceInput, didLoad details: NewsDetails, for news: News)
+	func newsServiceDidFail(_ service: NewsServiceInput)
 }
