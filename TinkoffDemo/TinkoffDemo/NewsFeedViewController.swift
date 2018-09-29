@@ -12,26 +12,21 @@ class NewsFeedViewController: UIViewController {
 
 	@IBOutlet weak var newsTableView: UITableView!
 	
-	var transportLayer: TrasnportLayer!
 	var newsService: NewsServiceInput!
 	var dataSource: NewsCoreDataDataSource<NewsFeedViewController>!
-	var persistanceController: PersistanceController!
+	
+	private let newsCellIdentifier = "NewsCellIdentifier"
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		newsTableView.register(UINib(nibName: "LoadingTableViewCell", bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
-		newsTableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsCellIdentifier")
+		newsTableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
+		newsTableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: newsCellIdentifier)
 		newsTableView.dataSource = self
 		newsTableView.delegate = self
-		
-		let baseURL = "https://api.tinkoff.ru/"
-		transportLayer = TrasnportLayer(baseUrl: baseURL)
-		newsService = NewsService(transportLayer: transportLayer)
-		newsService.output = self
+		newsTableView.estimatedRowHeight = 80
+
 //		newsService.obtainNewsHeaders(from: 0, count: 20)
-		
-		dataSource = NewsCoreDataDataSource(persistanceController: persistanceController, output: self)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -59,7 +54,7 @@ extension NewsFeedViewController: UITableViewDataSource {
 			return tableView.dequeueReusableCell(withIdentifier: "LoadingCellIdentifier", for: indexPath) as! LoadingTableViewCell
 		}
 		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCellIdentifier", for: indexPath) as! NewsTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: newsCellIdentifier, for: indexPath) as! NewsTableViewCell
 		let news = dataSource.entity(at: indexPath)
 		configure(cell: cell, with: news)
 		

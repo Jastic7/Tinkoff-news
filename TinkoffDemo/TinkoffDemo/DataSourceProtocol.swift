@@ -10,24 +10,24 @@ import Foundation
 
 protocol DataSourceProtocol {
 	
-	associatedtype E
-	associatedtype O: DataSourceOutput where O.E == E
-	var output: O { get }
+	associatedtype Element
+	associatedtype OutputType: DataSourceOutput where OutputType.Element == Element
+	var output: OutputType? { get set }
 	
-	init(persistanceController: PersistanceController, output: O)
+	init(persistanceController: PersistanceController)
 	
-	func entity(at indexPath: IndexPath) -> E
-	func save(entities: [E], completion: (() -> Void)?)
+	func entity(at indexPath: IndexPath) -> Element
+	func save(entities: [Element], completion: (() -> Void)?)
 	func numberOfEntities(in section: Int) -> Int
 }
 
 protocol DataSourceOutput {
 	
-	associatedtype E
+	associatedtype Element
 	
 	func dataSourceWillChangeEntities()
 	func dataSourceDidChangeEntities()
-	func dataSource(didChange entity: E, with type: DataSourceChangeType)
+	func dataSource(didChange entity: Element, with type: DataSourceChangeType)
 }
 
 enum DataSourceChangeType {

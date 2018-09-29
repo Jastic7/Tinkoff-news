@@ -12,4 +12,6 @@ class NewsTableViewCell: UITableViewCell {
 
 	@IBOutlet weak var headerLabel: UILabel!
 	@IBOutlet weak var countLabel: UILabel!
+	
+	static let nibName = "NewsTableViewCell"
 }

@@ -9,9 +9,9 @@
 import Foundation
 import CoreData
 
-class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSourceProtocol, NSFetchedResultsControllerDelegate where OutputType.E == News {
+class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSourceProtocol, NSFetchedResultsControllerDelegate where OutputType.Element == News {
 	
-	private(set) var output: OutputType
+	var output: OutputType?
 	
 	private let persistanceController: PersistanceController
 	private let translator = CoreDataTranslator()
@@ -28,9 +28,8 @@ class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSource
 		return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 	}()
 	
-	required init(persistanceController: PersistanceController, output: OutputType) {
+	required init(persistanceController: PersistanceController) {
 		self.persistanceController = persistanceController
-		self.output = output
 		
 		super.init()
 		
@@ -74,7 +73,7 @@ class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSource
 	// MARK:- NSFetchedResultsControllerDelegate
 	
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		output.dataSourceWillChangeEntities()
+		output?.dataSourceWillChangeEntities()
 	}
 	
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -83,18 +82,18 @@ class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSource
 		case .insert:
 			let entry = fetchedResultController.object(at: newIndexPath!)
 			let entity = translator.createEntity(from: entry)
-			output.dataSource(didChange: entity, with: DataSourceChangeType.insert(in: newIndexPath!))
+			output?.dataSource(didChange: entity, with: DataSourceChangeType.insert(in: newIndexPath!))
 			
 		case .update:
 			let entry = fetchedResultController.object(at: newIndexPath!)
 			let entity = translator.createEntity(from: entry)
-			output.dataSource(didChange: entity, with: .update(at: newIndexPath!))
+			output?.dataSource(didChange: entity, with: .update(at: newIndexPath!))
 		default:
 			break
 		}
 	}
 	
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		output.dataSourceDidChangeEntities()
+		output?.dataSourceDidChangeEntities()
 	}
 }

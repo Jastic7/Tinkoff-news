@@ -23,7 +23,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			fatalError("There is no NewsFeedVC")
 		}
 		
-		newsFeedController.persistanceController = persistanceController
+		
+		let baseURL = "https://api.tinkoff.ru/"
+		let transportLayer = TrasnportLayer(baseUrl: baseURL)
+		
+		let newsService = NewsService(transportLayer: transportLayer)
+		newsService.output = newsFeedController
+		newsFeedController.newsService = newsService
+		
+		let dataSource = NewsCoreDataDataSource<NewsFeedViewController>(persistanceController: persistanceController)
+		dataSource.output = newsFeedController
+		newsFeedController.dataSource = dataSource
 		
 		return true
 	}
