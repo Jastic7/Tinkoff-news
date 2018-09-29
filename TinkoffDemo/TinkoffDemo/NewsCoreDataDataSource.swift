@@ -28,6 +28,9 @@ class NewsCoreDataDataSource<OutputType: DataSourceOutput>: NSObject, DataSource
 		return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 	}()
 	
+	
+	//MARK:- DataSourceProtocol
+	
 	required init(persistanceController: PersistanceController) {
 		self.persistanceController = persistanceController
 		
