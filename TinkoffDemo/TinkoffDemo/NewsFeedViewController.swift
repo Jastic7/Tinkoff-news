@@ -12,6 +12,7 @@ class NewsFeedViewController: UIViewController {
 
 	@IBOutlet weak var newsTableView: UITableView!
 	private let refreshControl = UIRefreshControl()
+	private let spinner = UIActivityIndicatorView(style: .gray)
 	
 	var newsService: NewsServiceInput!
 	var dataSource: NewsCoreDataDataSource<NewsFeedViewController>!
@@ -21,16 +22,18 @@ class NewsFeedViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		newsTableView.register(UINib(nibName: "LoadingTableViewCell", bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
+		refreshControl.addTarget(self, action: #selector(updateNews(_:)), for: .valueChanged)
+		spinner.frame = CGRect(x: 0, y: 0, width: newsTableView.frame.width, height: 44)
+		spinner.startAnimating()
+		
 		newsTableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: newsCellIdentifier)
 		newsTableView.dataSource = self
 		newsTableView.delegate = self
 		newsTableView.estimatedRowHeight = 80
 		newsTableView.refreshControl = refreshControl
-		
-		refreshControl.addTarget(self, action: #selector(updateNews(_:)), for: .valueChanged)
+		newsTableView.tableFooterView = spinner
 
-//		newsService.obtainNewsHeaders(from: 0, count: 20)
+		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
 	
 	@objc func updateNews(_ sender: Any) {
@@ -45,23 +48,15 @@ class NewsFeedViewController: UIViewController {
 		detailsViewController.news = selectedNews
 		detailsViewController.isSpinnerActive = true
 	}
-	
-	private func isLoadingCell(at indexPath: IndexPath) -> Bool {
-		return indexPath.row == dataSource.numberOfEntities(in: indexPath.section)
-	}
 }
 
 extension NewsFeedViewController: UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return dataSource.numberOfEntities(in: section) + 1
+		return dataSource.numberOfEntities(in: section)
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		if isLoadingCell(at: indexPath) {
-			return tableView.dequeueReusableCell(withIdentifier: "LoadingCellIdentifier", for: indexPath) as! LoadingTableViewCell
-		}
-		
 		let cell = tableView.dequeueReusableCell(withIdentifier: newsCellIdentifier, for: indexPath) as! NewsTableViewCell
 		let news = dataSource.entity(at: indexPath)
 		configure(cell: cell, with: news)
@@ -88,11 +83,9 @@ extension NewsFeedViewController: UITableViewDelegate {
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		guard isLoadingCell(at: indexPath) else {
-			return
-		}
+		guard indexPath.row == dataSource.numberOfEntities(in: indexPath.section) - 1 else { return }
 		
-		let last = UInt(dataSource.numberOfEntities(in: indexPath.section)) + 10
+		let last = UInt(dataSource.numberOfEntities(in: indexPath.section))
 		newsService.obtainNewsHeaders(from: last, count: 20)
 	}
 }
