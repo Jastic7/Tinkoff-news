@@ -19,6 +19,14 @@ class NewsDetailsViewController: UIViewController {
 	var isSpinnerActive: Bool = false
 	var news: News!
 	
+	private lazy var dateFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "MMM dd, yyyy"
+		formatter.locale = Locale(identifier: "ru_RU")
+		
+		return formatter
+	}()
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -29,11 +37,17 @@ class NewsDetailsViewController: UIViewController {
 	func updateDetails() {
 		headerLabel.text = news.header.text.transformedByHtml
 		numberOfViewsLabel.text = "Просмотров: \(news.views)"
-		creationDateLabel.text = news.details?.creationDate.description
+		creationDateLabel.text = "Создано: " + (formattedDate(from: news.details?.creationDate) ?? "")
 		contentLabel.text = news.details?.content.transformedByHtml
 	}
 	
 	func updateSpinner() {
 		isSpinnerActive ? activityIndicator.startAnimating() : activityIndicator.stopAnimating()
+	}
+	
+	private func formattedDate(from date: Date?) -> String? {
+		guard let date = date else { return nil }
+
+		return dateFormatter.string(from: date);
 	}
 }
