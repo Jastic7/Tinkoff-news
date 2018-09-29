@@ -11,6 +11,7 @@ import UIKit
 class NewsFeedViewController: UIViewController {
 
 	@IBOutlet weak var newsTableView: UITableView!
+	private let refreshControl = UIRefreshControl()
 	
 	var newsService: NewsServiceInput!
 	var dataSource: NewsCoreDataDataSource<NewsFeedViewController>!
@@ -20,13 +21,20 @@ class NewsFeedViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		newsTableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
+		newsTableView.register(UINib(nibName: "LoadingTableViewCell", bundle: nil), forCellReuseIdentifier: "LoadingCellIdentifier")
 		newsTableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: newsCellIdentifier)
 		newsTableView.dataSource = self
 		newsTableView.delegate = self
 		newsTableView.estimatedRowHeight = 80
+		newsTableView.refreshControl = refreshControl
+		
+		refreshControl.addTarget(self, action: #selector(updateNews(_:)), for: .valueChanged)
 
 //		newsService.obtainNewsHeaders(from: 0, count: 20)
+	}
+	
+	@objc func updateNews(_ sender: Any) {
+		newsService.obtainNewsHeaders(from: 0, count: 20)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -84,7 +92,7 @@ extension NewsFeedViewController: UITableViewDelegate {
 			return
 		}
 		
-		let last = UInt(dataSource.numberOfEntities(in: indexPath.section))
+		let last = UInt(dataSource.numberOfEntities(in: indexPath.section)) + 10
 		newsService.obtainNewsHeaders(from: last, count: 20)
 	}
 }
@@ -111,6 +119,7 @@ extension NewsFeedViewController: NewsServiceOutput {
 	}
 	
 	func newsService(_ service: NewsServiceInput, didLoad newsHeaders: [NewsHeader]) {
+		refreshControl.endRefreshing()
 		let downloadedNews = newsHeaders.map { News(header: $0) }
 		dataSource.save(entities: downloadedNews)
 	}
