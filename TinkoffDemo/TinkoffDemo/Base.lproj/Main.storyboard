@@ -4,13 +4,12 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--News-->
+        <!--Новости-->
         <scene sceneID="ijr-dk-Kgf">
             <objects>
                 <tableViewController id="xHb-Kf-fQ0" customClass="NewsFeedViewController" customModule="TinkoffDemo" customModuleProvider="target" sceneMemberID="viewController">
@@ -23,7 +22,7 @@
                             <outlet property="delegate" destination="xHb-Kf-fQ0" id="y6g-HJ-eaK"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="News" id="CeY-Km-W2n"/>
+                    <navigationItem key="navigationItem" title="Новости" id="CeY-Km-W2n"/>
                     <connections>
                         <segue destination="EJn-5d-fs9" kind="show" identifier="detailNewsSegue" id="qpI-Vz-8C3"/>
                     </connections>
@@ -32,7 +31,7 @@
             </objects>
             <point key="canvasLocation" x="752" y="134"/>
         </scene>
-        <!--Details-->
+        <!--Детали-->
         <scene sceneID="LjK-7M-SBW">
             <objects>
                 <viewController id="EJn-5d-fs9" customClass="NewsDetailsViewController" customModule="TinkoffDemo" customModuleProvider="target" sceneMemberID="viewController">
@@ -110,7 +109,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="pAW-Ys-wUI"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Details" largeTitleDisplayMode="never" id="Zv4-iV-JH5"/>
+                    <navigationItem key="navigationItem" title="Детали" largeTitleDisplayMode="never" id="Zv4-iV-JH5"/>
                     <connections>
                         <outlet property="activityIndicator" destination="roa-h5-qeV" id="zi0-oH-OCm"/>
                         <outlet property="contentLabel" destination="DsK-WQ-QlI" id="BXA-gh-0AE"/>
