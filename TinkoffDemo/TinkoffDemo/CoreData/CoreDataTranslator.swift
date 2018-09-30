@@ -53,7 +53,7 @@ class CoreDataTranslator {
 	private func fill(entry: MONewsHeader, from entity: NewsHeader) {
 		entry.id = entity.id
 		entry.publicationDate = entity.publicationDate as NSDate
-		entry.text = entity.text
+		entry.text = entity.text.transformedByHtml ?? entity.text
 	}
 	
 	private func fill(entry: MONewsDetails, from entity: NewsDetails) {

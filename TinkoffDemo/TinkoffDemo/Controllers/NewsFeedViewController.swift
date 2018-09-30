@@ -59,15 +59,12 @@ extension NewsFeedViewController {
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: newsCellIdentifier, for: indexPath) as! NewsTableViewCell
+		
 		let news = dataSource.entity(at: indexPath)
-		configure(cell: cell, with: news)
+		cell.headerLabel.text = news.header.text
+		cell.countLabel.text = "Просмотров: \(news.views)"
 		
 		return cell
-	}
-	
-	func configure(cell: NewsTableViewCell, with news: News) {
-		cell.headerLabel.text = news.header.text.transformedByHtml
-		cell.countLabel.text = "Просмотров: \(news.views)"
 	}
 }
 
