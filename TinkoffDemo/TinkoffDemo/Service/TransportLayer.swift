@@ -32,16 +32,13 @@ class TrasnportLayer {
 		queryComponents.queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }
 		
 		guard let url = queryComponents.url else { return }
-		print("makeRequest to url: \(url)")
 		
 		let dataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
 			if let error = error {
 				failure(error)
-				print("request to \(url): fail")
 				return
 			}
 			
-			print("request to \(url): success")
 			success(data!)
 		}
 		

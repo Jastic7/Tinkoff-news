@@ -20,14 +20,11 @@ class NewsFeedViewController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		let frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44)
-		
-		spinner.frame = frame
 		spinner.startAnimating()
 		
 		tableView.register(UINib(nibName: NewsTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: newsCellIdentifier)
 		tableView.estimatedRowHeight = 80
-		tableView.refreshControl = UIRefreshControl(frame: frame)
+		tableView.refreshControl = UIRefreshControl()
 		tableView.refreshControl?.addTarget(self, action: #selector(updateNews(_:)), for: .valueChanged)
 		tableView.tableFooterView = spinner
 
